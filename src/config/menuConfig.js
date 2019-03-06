@@ -42,5 +42,20 @@ const menuList = [
         key: '/user',
         icon: 'user'
     },
+    {
+        title: '社区管理',
+        key: '/bbs',
+        icon: 'team'
+    },
+    {
+        title: '商品管理',
+        key: '/goods',
+        icon: 'shopping'
+    },
+    {
+        title: '订单管理',
+        key: '/order',
+        icon: 'file-text'
+    },
 ];
 export default menuList;

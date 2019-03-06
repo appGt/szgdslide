@@ -11,6 +11,9 @@ export default class NavLeft extends React.Component {
     this.setState({
       menuList
     })
+    // const IconFont = Icon.createFromIconfontCN({
+    //   scriptUrl: '//at.alicdn.com/t/font_1074642_e1fgru0spu.js'
+    // })
   }
   renderMenu = (data) => {
     return data.map((item) => {
