@@ -1,7 +1,7 @@
 import React from 'react'
 import { Layout, Icon } from 'antd'
 import MenuList from './components/NavLeft'
-import './style/layout.less'
+import './style/common.less'
 const { Sider, Header, Content } = Layout
 
 export default class AdminLayout extends React.Component {

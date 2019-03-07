@@ -1,12 +1,23 @@
-.navLeft{
+@import './loading.less';
+.clearfix {
+  &::after {
+    content: '';
+    display: block;
+    visibility: hidden;
+  }
+}
+
+.navLeft {
   height: calc(100vh)
 }
-.content{
+
+.content {
   margin: 15px 16px;
   padding: 5px 20px;
   background: #fff;
   border-radius: 5px;
 }
+
 .trigger {
   font-size: 18px;
   line-height: 64px;
