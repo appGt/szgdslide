@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default class Welcome extends React.Component {
+export default class Order extends React.Component {
   render() {
     return (
       <div>
-        总览
+        订单S管理
       </div>
     )
   }

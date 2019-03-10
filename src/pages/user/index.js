@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default class Welcome extends React.Component {
+export default class User extends React.Component {
   render() {
     return (
       <div>
-        总览
+        用户管理
       </div>
     )
   }

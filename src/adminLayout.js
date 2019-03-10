@@ -35,10 +35,9 @@ export default class AdminLayout extends React.Component {
             />
           </Header>
           <Content className="content">
-            欢迎使用
-            {/* {
+            {
               this.props.children
-            } */}
+            }
           </Content>
         </Layout>
       </Layout>

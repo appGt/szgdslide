@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default class Welcome extends React.Component {
+export default class Video extends React.Component {
   render() {
     return (
       <div>
-        总览
+        视频管理
       </div>
     )
   }

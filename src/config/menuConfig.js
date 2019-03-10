@@ -8,34 +8,34 @@ const menuList = [
         title: '新闻管理',
         key: '/news',
         icon: 'file-text',
-        children: [
-            {
-                title: '新闻总览',
-                key: '/news/home',
-            }
-        ]
+        // children: [
+        //     {
+        //         title: '新闻总览',
+        //         key: '/news/index',
+        //     }
+        // ]
     },
     {
         title: '广告管理',
         key: '/adv',
         icon: 'appstore',
-        children: [
-            {
-                title: '广告总览',
-                key: '/adv/home',
-            }
-        ]
+        // children: [
+        //     {
+        //         title: '广告总览',
+        //         key: '/adv/index',
+        //     }
+        // ]
     },
     {
         title: '视频管理',
         key: '/video',
         icon: 'video-camera',
-        children: [
-            {
-                title: '所有视频',
-                key: '/video/home',
-            }
-        ]
+        // children: [
+        //     {
+        //         title: '所有视频',
+        //         key: '/video/index',
+        //     }
+        // ]
     },
     {
         title: '用户',

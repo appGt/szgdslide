@@ -6,6 +6,36 @@ import Axios from 'axios';
 const FormItem = Form.Item
 
 class AdminLogin extends React.Component {
+  componentWillMount() {
+    this.isRemeber()
+    // this.isLogin()
+  }
+
+  islogin = () => {
+    
+    // Axios({
+    //   url: '/admin/isLogined',
+    //   method: 'post',
+    //   params: params
+    // }).then((res)=>{
+    //   if(res.status === true){
+    //     localStorage.setItem('isLogin', true)
+    //     // this.props.history.push('/')
+    //   }
+    // })
+  }
+
+  isRemeber = () => {
+    let remember = localStorage.getItem('remember')
+    if (remember) {
+      remember = JSON.parse(remember)
+      this.setState({
+        'username': remember.username,
+        'password': remember.password
+      })
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
@@ -34,10 +64,11 @@ class AdminLogin extends React.Component {
     return (
       <div className="admin-login-wrapper">
         <Form onSubmit={this.handleSubmit} className="admin-login">
-        <h2>后台管理</h2>
+          <h2>后台管理</h2>
           <FormItem>
             {
               getFieldDecorator('username', {
+                initialValue: this.state.username,
                 rules: [{ required: true, message: '请输入账号!' }]
               })(
                 <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
@@ -47,6 +78,7 @@ class AdminLogin extends React.Component {
           <FormItem>
             {
               getFieldDecorator('password', {
+                initialValue: this.state.password,
                 rules: [{ required: true, message: '请输入密码!' }]
               })(
                 <Input type="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Password" />

@@ -1,10 +1,10 @@
 import React from 'react'
 
-export default class Welcome extends React.Component {
+export default class News extends React.Component {
   render() {
     return (
       <div>
-        总览
+        新闻管理
       </div>
     )
   }
