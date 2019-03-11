@@ -5,6 +5,7 @@ import AdminLogin from './pages/adminLogin'
 import AdminLayout from './adminLayout'
 import Welcome from './pages/home'
 import News from './pages/news'
+import EditNews from './pages/news/editNews'
 import Video from './pages/video'
 import Order from './pages/order'
 import Goods from './pages/goods'
@@ -26,7 +27,8 @@ export default class Router extends React.Component {
                   <Route path="/" exact component={Welcome} />
                   <Route path="/home" exact component={Welcome} />
                   <Route path="/news" component={News} />
-                  <Route path="/adv" component={News} />
+                  <Route path="/news/edit/:id" component={EditNews} />
+                  <Route path="/adv" component={Adv} />
                   <Route path="/order" component={Order} />
                   <Route path="/video" component={Video} />
                   <Route path="/goods" component={Goods} />

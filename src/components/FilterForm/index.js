@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, DatePicker, Input, Select, Button } from 'antd'
-const FormItem = Form.item
+const FormItem = Form.Item
+const Option = Select.Option
 
 class FilterForm extends React.Component {
   query = () => {
@@ -18,9 +19,9 @@ class FilterForm extends React.Component {
     const formItemList = []
     if (formList && formList.length > 0) {
       formList.forEach(item => {
-        let { type, label = 'label', filed, initialValue, placeholder, width = 80, } = item
+        let { type, label = 'label', field, initialValue, placeholder, width = 80, } = item
         switch (type) {
-          case '日期选择':
+          case '时间查询':
             let begin_time = <FormItem>
               {
                 getFieldDecorator('begin_time')(
@@ -40,9 +41,9 @@ class FilterForm extends React.Component {
             formItemList.push(end_time)
             break;
           case 'INPUT':
-            let input = <FormItem label={label} key={filed}>
+            let input = <FormItem label={label} key={field}>
               {
-                getFieldDecorator(filed, {
+                getFieldDecorator(field, {
                   initialValue
                 })(
                   <Input placeholder={placeholder} style={{ width }} />
@@ -53,9 +54,9 @@ class FilterForm extends React.Component {
 
             break;
           case 'SELECT':
-            let SELECT = <FormItem label={label} key={filed}>
+            let SELECT = <FormItem label={label} key={field}>
               {
-                getFieldDecorator(filed, {
+                getFieldDecorator(field, {
                   initialValue
                 })(
                   <Select placeholder={placeholder} style={{ width }} >
@@ -90,4 +91,4 @@ class FilterForm extends React.Component {
   }
 }
 
-export default Form.create()(FilterForm)
+export default Form.create({})(FilterForm)

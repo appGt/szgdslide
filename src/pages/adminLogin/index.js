@@ -13,16 +13,15 @@ class AdminLogin extends React.Component {
 
   islogin = () => {
     
-    // Axios({
-    //   url: '/admin/isLogined',
-    //   method: 'post',
-    //   params: params
-    // }).then((res)=>{
-    //   if(res.status === true){
-    //     localStorage.setItem('isLogin', true)
-    //     // this.props.history.push('/')
-    //   }
-    // })
+    Axios({
+      url: '/admin/isLogined',
+      method: 'post',
+    }).then((res)=>{
+      if(res.status === true){
+        localStorage.setItem('isLogin', true)
+        // this.props.history.push('/')
+      }
+    })
   }
 
   isRemeber = () => {
