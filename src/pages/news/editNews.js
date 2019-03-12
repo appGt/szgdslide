@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Card, Modal, Input, message } from 'antd'
+import { NavLink } from 'react-router-dom'
 import { Editor } from 'react-draft-wysiwyg'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import draftjsToHtml from 'draftjs-to-html'
@@ -12,6 +13,7 @@ export default class EditNews extends React.Component {
     showRichText: false,
     content: '',
     editorState: '',
+    showBack: false,
   }
   componentWillMount() {
     this.initData()
@@ -20,10 +22,11 @@ export default class EditNews extends React.Component {
   initData = () => {
     let id = this.props.match.params.id
     if (id) {
-
-      Axios.post('/admin/detailNews', {
-        firstName: 'Fred',
-        lastName: 'Flintstone'
+      this.setState({
+        showBack: true
+      })
+      Axios.post('/szgdslide/admin/detailNews', {
+        id: id
       })
         .then(function (res) {
           this.setState({
@@ -33,7 +36,7 @@ export default class EditNews extends React.Component {
           })
         })
         .catch(function (error) {
-          message('获取数据失败');
+          message.warn('获取数据失败');
         });
     }
   }
@@ -47,8 +50,8 @@ export default class EditNews extends React.Component {
       content,
     })
       .then(function (res) {
-        if(res.status)
-        message('提交成功');
+        if (res.status)
+          message('提交成功');
       })
       .catch(function (error) {
         message('获取数据失败');
@@ -61,13 +64,13 @@ export default class EditNews extends React.Component {
       title: e.target.value
     })
   }
- 
+
   onEditorStateChange = (editorState) => {
     this.setState({
       editorState
     })
   }
- 
+
   //内容变动
   onEditorChange = (content) => {
     this.setState({
@@ -78,14 +81,17 @@ export default class EditNews extends React.Component {
   render() {
     return (
       <div>
-        <Card title="操作">
-          <Button onClick={this.onHandleGetHtml}>预览</Button>
-          <Button onClick={this.handleSubmit}>提交</Button>
+        <Card>
+          {
+            this.state.showBack ? <NavLink to="/news/list"><Button type="primary" icon="left">返回</Button></NavLink> : ''
+          }
+          <Button type="primary" onClick={this.onHandleGetHtml} style={{ marginLeft: 10 }}>预览</Button>
+          <Button type="primary" onClick={this.handleSubmit} style={{ marginLeft: 10 }}>提交</Button>
         </Card>
         <Card title="标题" style={{ marginTop: 10 }}>
           <Input placeholder="标题" allowClear onChange={this.onChange} defaultValue={this.state.title} />
         </Card>
-        <Card title="内容" style={{ marginTop: 10 }}>
+        <Card style={{ marginTop: -10 }}>
           <Editor
             editorState={this.state.editorState}
             toolbarClassName="toolbarClassName"

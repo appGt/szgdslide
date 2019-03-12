@@ -48,7 +48,7 @@ export default class Axios {
           } else {
             Modal.warning({
               title: '提示',
-              content: data.message
+              content: data.message || '获取失败'
             })
           }
         } else {

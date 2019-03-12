@@ -27,23 +27,23 @@ class FilterForm extends React.Component {
         let { type, label = 'label', field, initialValue, placeholder, width = 80, } = item
         switch (type) {
           case '时间查询':
-            let startTime = <FormItem label="按时间范围">
+            let start_time = <FormItem label="按时间范围">
               {
-                getFieldDecorator('startTime')(
-                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD HH:mm:ss" />
+                getFieldDecorator('start_time')(
+                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD" />
                 )
               }
             </FormItem>
-            formItemList.push(startTime)
+            formItemList.push(start_time)
 
-            let endTime = <FormItem>
+            let end_time = <FormItem>
               {
-                getFieldDecorator('endTime')(
-                  <DatePicker showTime={true} format="YYYY-MM-DD HH:mm:ss" />
+                getFieldDecorator('end_time')(
+                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD" />
                 )
               }
             </FormItem>
-            formItemList.push(endTime)
+            formItemList.push(end_time)
             break;
           case 'INPUT':
             let input = <FormItem label={label} key={field}>
@@ -90,9 +90,9 @@ class FilterForm extends React.Component {
           this.initFormList()
         }
         <FormItem>
-          <Button onClick={this.query} style={{ marginRight: 10 }}>查询</Button>
-          <Button onClick={this.reset}>重置</Button>
-          <Button onClick={this.reset}>重置</Button>
+          <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
+          <Button onClick={this.reset} type="default" style={{ marginRight: 10 }}>重置</Button>
+          <Button onClick={this.reset} type="danger">删除</Button>
         </FormItem>
       </Form>
     )

@@ -26,8 +26,9 @@ export default class Router extends React.Component {
                 <Switch>
                   <Route path="/" exact component={Welcome} />
                   <Route path="/home" exact component={Welcome} />
-                  <Route path="/news" component={News} />
+                  <Route path="/news/list" component={News} />
                   <Route path="/news/edit/:id" component={EditNews} />
+                  <Route path="/news/edit/" component={EditNews} />
                   <Route path="/adv" component={Adv} />
                   <Route path="/order" component={Order} />
                   <Route path="/video" component={Video} />

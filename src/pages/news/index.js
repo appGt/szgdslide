@@ -1,10 +1,12 @@
 import React from 'react'
 import { Card, Table, message, Modal, Button, Form } from 'antd'
+import { withRouter } from 'react-router-dom'
 import axios from '../../axios'
 import FilterForm from './../../components/FilterForm'
 import Utils from '../../utils/utils'
+import Axios from 'axios';
 
-export default class News extends React.Component {
+class News extends React.Component {
   state = {
     orderInfo: {},
     orderConfirmVisable: false
@@ -32,11 +34,11 @@ export default class News extends React.Component {
   //过滤
   handleFilter = (params) => {
     this.params = Object.assign(this.params, params)
-    if (this.params.startTime) {
-      this.params.startTime = new Date(this.params.startTime).getTime()
+    if (this.params.start_time) {
+      this.params.start_time = new Date(this.params.start_time).getTime()
     }
-    if (this.params.endTime) {
-      this.params.endTime = new Date(this.params.endTime).getTime()
+    if (this.params.end_time) {
+      this.params.end_time = new Date(this.params.end_time).getTime()
     }
     this.requestList()
   }
@@ -53,11 +55,22 @@ export default class News extends React.Component {
     selectedRows.forEach((i, item) => {
       ids += (item.id + ',')
     })
+    console.log(ids)
+    Axios({
+      method: 'post',
+      url: ''
+    })
+  }
+
+  handleDetail = (record, e) => {
+    let id = record.id
+    this.props.history.push('/news/edit/'+id)
   }
 
   requestList = () => {
     let _this = this
-    axios.requestList(_this, 'http://localhost:7300/mock/5c876e66150c56207006bd22/slide/admin/listNews', {
+    let url = 'http://localhost:7300/mock/5c87c88e0fed871efcacfb98/admin/listNews';
+    axios.requestList(_this, '/szgdslide/admin/listNews', {
       params: _this.params,
       isShowLoading: true
     })
@@ -68,33 +81,44 @@ export default class News extends React.Component {
     this.setState({ selectedRowKeys, selectedRows });
   }
 
+
+
   render() {
     const columns = [
       {
         title: '编号',
-        dataIndex: 'id'
+        dataIndex: 'id',
+        key: 'id'
       },
       {
         title: '标题',
-        dataIndex: 'title'
+        dataIndex: 'title',
+        key: 'title'
       },
       {
         title: '作者',
-        dataIndex: 'author'
+        dataIndex: 'author',
+        key: 'author'
       },
       {
         title: '时间',
         dataIndex: 'time',
+        key: 'time',
         render: (time) => {
           return Utils.formateDate(time)
         }
       },
       {
         title: '点击量',
+        key: 'browes',
         dataIndex: 'browes'
       },
       {
-        title: '操作'
+        title: '操作',
+        key: 'x',
+        render: (text, record) => {
+          return <a href="javascript:;" onClick={(e)=>this.handleDetail(record,e)}>编辑</a>
+        }
       }
     ]
     const selectedRowKeys = this.state.selectedRowKeys
@@ -122,3 +146,4 @@ export default class News extends React.Component {
     )
   }
 }
+export default withRouter(News)

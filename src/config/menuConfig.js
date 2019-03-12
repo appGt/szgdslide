@@ -8,12 +8,16 @@ const menuList = [
         title: '新闻管理',
         key: '/news',
         icon: 'file-text',
-        // children: [
-        //     {
-        //         title: '新闻总览',
-        //         key: '/news/index',
-        //     }
-        // ]
+        children: [
+            {
+                title: '新闻总览',
+                key: '/news/list',
+            },
+            {
+                title: '发布新闻',
+                key: '/news/edit/',
+            },
+        ]
     },
     {
         title: '广告管理',

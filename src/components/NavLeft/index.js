@@ -48,7 +48,7 @@ export default class NavLeft extends React.Component {
   }
   render() {
     return (
-      <Menu theme="dark" mode="inline" >
+      <Menu theme="dark" mode="vertical" >
         {
           this.state.menuList
         }
