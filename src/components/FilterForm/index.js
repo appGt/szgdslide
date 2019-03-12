@@ -6,11 +6,16 @@ const Option = Select.Option
 class FilterForm extends React.Component {
   query = () => {
     const params = this.props.form.getFieldsValue()
-    this.props.handleSubmit(params)
+    this.props.filterSubmit(params)
   }
 
   reset = () => {
+    this.props.form.resetFields()
     this.props.handleReset()
+  }
+
+  delete = ()=>{
+    this.props.handleDelete()
   }
 
   initFormList = () => {
@@ -22,23 +27,23 @@ class FilterForm extends React.Component {
         let { type, label = 'label', field, initialValue, placeholder, width = 80, } = item
         switch (type) {
           case '时间查询':
-            let begin_time = <FormItem>
+            let startTime = <FormItem label="按时间范围">
               {
-                getFieldDecorator('begin_time')(
-                  <DatePicker showTime={true} placeholder="开始时间" format="YYYY-MM-DD HH:mm:ss" />
+                getFieldDecorator('startTime')(
+                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD HH:mm:ss" />
                 )
               }
             </FormItem>
-            formItemList.push(begin_time)
+            formItemList.push(startTime)
 
-            let end_time = <FormItem>
+            let endTime = <FormItem>
               {
-                getFieldDecorator('end_time')(
-                  <DatePicker showTime={true} placeholder="结束时间" format="YYYY-MM-DD HH:mm:ss" />
+                getFieldDecorator('endTime')(
+                  <DatePicker showTime={true} format="YYYY-MM-DD HH:mm:ss" />
                 )
               }
             </FormItem>
-            formItemList.push(end_time)
+            formItemList.push(endTime)
             break;
           case 'INPUT':
             let input = <FormItem label={label} key={field}>
@@ -70,6 +75,8 @@ class FilterForm extends React.Component {
             formItemList.push(SELECT)
 
             break;
+          default:
+            break;
         }
       })
     }
@@ -84,6 +91,7 @@ class FilterForm extends React.Component {
         }
         <FormItem>
           <Button onClick={this.query} style={{ marginRight: 10 }}>查询</Button>
+          <Button onClick={this.reset}>重置</Button>
           <Button onClick={this.reset}>重置</Button>
         </FormItem>
       </Form>
