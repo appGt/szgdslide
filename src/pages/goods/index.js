@@ -94,6 +94,11 @@ export default class goods extends React.Component {
         width: 100,
       },
       {
+        title: '价格',
+        dataIndex: 'price',
+        width: 100,
+      },
+      {
         title: '供应商',
         dataIndex: 'supplier',
         width: 100,
