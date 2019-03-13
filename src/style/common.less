@@ -1,6 +1,5 @@
 @import './default.less';
 @import './loading.less';
-
 .clearfix {
   &::after {
     content: '';
@@ -13,11 +12,17 @@
   height: calc(100vh)
 }
 
+section.ant-layout {
+  height: calc(100vh);
+}
+
 .content {
   margin: 15px 16px;
   padding: 5px 20px;
   background: #fff;
   border-radius: 5px;
+  height: calc(100% - 64px);
+  overflow-y: scroll;
 }
 
 .trigger {
@@ -38,11 +43,15 @@
   margin: 16px;
 }
 
-.content-wrap{
+.content-wrap {
   background: #fff;
   border: 1px solid #e8e8e8;
   margin-top: -2px;
-  .ant-table-wrapper{
+  .ant-table-wrapper {
     margin: 0 -1px 0;
   }
+}
+
+.full-height{
+  height: 100%;
 }

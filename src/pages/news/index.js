@@ -69,7 +69,6 @@ class News extends React.Component {
 
   requestList = () => {
     let _this = this
-    let url = 'http://localhost:7300/mock/5c87c88e0fed871efcacfb98/admin/listNews';
     axios.requestList(_this, '/szgdslide/admin/listNews', {
       params: _this.params,
       isShowLoading: true
@@ -80,8 +79,6 @@ class News extends React.Component {
   onSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
   }
-
-
 
   render() {
     const columns = [

@@ -60,7 +60,7 @@ export default class Axios {
         }
         Modal.warning({
           title: '提示',
-          content: options.errMsg
+          content: options.errMsg || '获取失败'
         })
       })
     })
