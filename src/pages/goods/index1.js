@@ -1,5 +1,5 @@
 import React from 'react'
-import { Upload, Icon, Modal } from 'antd';
+import { Upload, Icon, Message } from 'antd';
 
 export default class goods1 extends React.Component {
   state = {
@@ -53,11 +53,11 @@ function getBase64(img, callback) {
 function beforeUpload(file) {
   const isJPG = file.type === 'image/jpeg';
   if (!isJPG) {
-    message.error('You can only upload JPG file!');
+    Message.error('You can only upload JPG file!');
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    Message.error('Image must smaller than 2MB!');
   }
   return isJPG && isLt2M;
 }

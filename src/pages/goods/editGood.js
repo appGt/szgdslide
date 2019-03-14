@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Message, Select } from 'antd'
+import { Input, Form, Message, Select, Upload } from 'antd'
 import Axios from 'axios';
 const FormItem = Form.Item
 
@@ -11,7 +11,7 @@ class EditGood extends React.Component {
     price: '',
     sale_num: '',
     supplier: '',
-    supplierList:[]
+    supplierList: []
   }
   componentWillMount() {
     let goodsId = this.props.goodsId
@@ -35,7 +35,7 @@ class EditGood extends React.Component {
     })
   }
 
-  getSupplierList =()=>{
+  getSupplierList = () => {
     Axios({
       url: '',
     }).then((res) => {

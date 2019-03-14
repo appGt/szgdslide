@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import axios from '../../axios'
 import FilterForm from './../../components/FilterForm'
 import Utils from '../../utils/utils'
+import Goods1 from './index1'
 import Axios from 'axios';
 import './goods.less'
 
@@ -13,6 +14,7 @@ export default class goods extends React.Component {
     bigImg: '',
     imgVisible: false,
     supplierList: [],
+    editVisable: false,
   }
 
   params = {
@@ -66,10 +68,14 @@ export default class goods extends React.Component {
     })
   }
   //取消预览
-  handleCancel = () => this.setState({ imgVisible: false })
+  handleCancel = () => this.setState({ imgVisible: false, editVisible: false })
 
   //编辑商品
-  handleDetail = () => { }
+  handleDetail = () => {
+    this.setState({
+      editVisable: true
+    })
+  }
 
   render() {
     const columns = [
@@ -153,6 +159,9 @@ export default class goods extends React.Component {
         </div>
         <Modal visible={this.state.imgVisible} footer={null} onCancel={this.handleCancel}>
           <img style={{ width: '100%' }} src={this.state.bigImg} />
+        </Modal>
+        <Modal visible={this.state.editVisible} footer={null} onCancel={this.handleCancel}>
+          <Goods1 />
         </Modal>
       </div>
     );
