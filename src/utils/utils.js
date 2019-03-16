@@ -12,7 +12,7 @@ export default {
       onChange: (current) => {
         callback(current)
       },
-      current: data.pageNo,
+      current: data.page,
       pageSize: data.pageSize,
       total: data.totalCount,
       showSizeChanger: true,

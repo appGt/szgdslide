@@ -1,0 +1,93 @@
+.web-body{
+  margin: 0 auto;
+  max-width: 1170px;
+  min-height: 100vh;
+  padding-top: 30px;
+  .web-top{
+    display: flex;
+    height: 100px;
+    .web-logo{
+      height: 100%;
+      line-height: 100px;
+      width: 150px;
+      text-align: center;
+      color: #fff;
+      font-size: 30px;
+      font-family: '华文彩云';
+      background: #ccc;
+    }
+  }
+
+  .web-nav{
+    margin-top: 10px;
+    display: flex;
+    height: 60px;
+    line-height: 60px;
+    color: #fff;
+    background: #000;
+    .web-nav-item{
+      height: 100%;
+      padding: 0 20px;
+      line-height: inherit;
+      text-align: center;
+      font-size: 20px;
+      cursor: pointer;
+      &:hover{
+        background: #ffa501;
+      }
+      a{
+        color: #fff;
+      }
+    }
+  }
+
+  .carousel-item{
+    position: relative;
+    max-width: 715px;
+    max-height: 414px;
+    .text{
+      position: absolute;
+      max-height: 50px;
+      line-height: 50px;
+      bottom: 0;
+      width: 100%;
+      font-size: 20px;
+      text-align: center;
+      padding: 0 10px;
+    }
+  }
+
+  .news-list{
+    width: 440px;
+    float: right;
+    .ant-card-head{
+      height: 50px;
+      line-height: 50px;
+      padding: 0 15px;
+      .ant-card-head-title{
+        padding: 0;
+      }
+    } 
+    .ant-card-body{
+      padding: 0;
+      ul{
+        margin: 0;
+        li{
+          height: 52px;
+          line-height: 52px;
+          font-size: 16px;
+          padding: 0 15px;
+        }
+      }
+    }
+  }
+
+  .video-warpper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .video-item{
+      width: 262px;
+    }
+  }
+}

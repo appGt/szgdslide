@@ -30,7 +30,6 @@ export default class Axios {
       document.querySelector('.loading').style.display = 'block'
     }
     const { url, method='get', params } = options
-    let baseURL = 'https://www.easy-mock.com/mock/5c149b721ee30f317685ba15/mockapi'
     return new Promise((resolve, reject) => {
       axios({
         url,

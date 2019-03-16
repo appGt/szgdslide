@@ -14,6 +14,12 @@ import BBS from './pages/bbs'
 import User from './pages/user'
 import NoMatch from './pages/noMatch'
 
+import Web from './pages/cWeb/web/web'
+import WebNews from './pages/cWeb/news/news'
+import WebVideo from './pages/cWeb/video/video'
+import WebShop from './pages/cWeb/shop/shop'
+import WebBBS from './pages/cWeb/bbs/bbs'
+
 export default class Router extends React.Component {
   render() {
     return (
@@ -21,6 +27,16 @@ export default class Router extends React.Component {
         <App>
           <Switch>
             <Route path="/adminLogin" component={AdminLogin}></Route>
+            <Route path="/web" render={() =>
+              <Switch>
+                <Route path="/web" exact component={Web} />
+                <Route path="/web/news" exact component={WebNews} />
+                <Route path="/web/video" exact component={WebVideo} />
+                <Route path="/web/shop" exact component={WebShop} />
+                <Route path="/web/bbs" exact component={WebBBS} />
+              </Switch>
+
+            }></Route>
             <Route path="/" render={() =>
               <AdminLayout>
                 <Switch>
@@ -40,6 +56,7 @@ export default class Router extends React.Component {
               </AdminLayout>
 
             }></Route>
+            <Route component={NoMatch} />
           </Switch>
         </App>
       </HashRouter>

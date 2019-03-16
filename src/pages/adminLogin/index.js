@@ -1,25 +1,31 @@
 import React from 'react'
 import './login.less'
-import { Form, Button, Input, Icon, Checkbox } from 'antd'
+import { Form, Button, Input, Icon, Checkbox, Message } from 'antd'
 import { withRouter } from 'react-router-dom'
 import Axios from 'axios';
 const FormItem = Form.Item
 
 class AdminLogin extends React.Component {
+  state = {
+    username: '',
+    password: ''
+  }
   componentWillMount() {
     this.isRemeber()
-    // this.isLogin()
+    this.islogined()
   }
 
-  islogin = () => {
-    
+  islogined = () => {
+
     Axios({
-      url: '/admin/isLogined',
-      method: 'post',
-    }).then((res)=>{
-      if(res.status === true){
-        localStorage.setItem('isLogin', true)
-        // this.props.history.push('/')
+      url: '/szgdslide/admin/isLogined',
+      method: 'get',
+    }).then((res) => {
+      if (res.status === 200) {
+        if (res.data.success === true && res.data.message === '已经登录') {
+          localStorage.setItem('isLogin', true)
+          this.props.history.push('/')
+        }
       }
     })
   }
@@ -39,21 +45,27 @@ class AdminLogin extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        let params = this.props.form.getFieldsValue()
-        if (params.remember === true) {
-          localStorage.setItem('remember', JSON.stringify(params))
+        let data = this.props.form.getFieldsValue()
+        if (data.remember === true) {
+          localStorage.setItem('remember', JSON.stringify(data))
         }
-        this.props.history.push('/')
-        // Axios({
-        //   url: '/admin/login',
-        //   method: 'post',
-        //   params: params
-        // }).then((res)=>{
-        //   if(res.status === true){
-        //     localStorage.setItem('isLogin', true)
-        //     // this.props.history.push('/')
-        //   }
-        // })
+        var params = new URLSearchParams();
+        params.append('username', data.username);
+        params.append('password', data.password);
+        Axios({
+          method: 'post',
+          data: params,
+          url: '/szgdslide/admin/login'
+        }).then((res) => {
+          if (res.status === 200) {
+            if (res.data.success === true) {
+              localStorage.setItem('isLogin', true)
+              this.props.history.push('/')
+            }
+          }
+        }).catch(() => {
+          Message.error('登录失败')
+        })
       }
     })
   }
@@ -64,7 +76,7 @@ class AdminLogin extends React.Component {
       <div className="admin-login-wrapper">
         <Form onSubmit={this.handleSubmit} className="admin-login">
           <h2>后台管理</h2>
-          <FormItem>
+          <FormItem key="username">
             {
               getFieldDecorator('username', {
                 initialValue: this.state.username,
@@ -74,7 +86,7 @@ class AdminLogin extends React.Component {
               )
             }
           </FormItem>
-          <FormItem>
+          <FormItem key="password">
             {
               getFieldDecorator('password', {
                 initialValue: this.state.password,
@@ -93,11 +105,9 @@ class AdminLogin extends React.Component {
             )}
             <Button type="primary" htmlType="submit" className="login-form-button">
               登录
-                </Button>
+            </Button>
           </FormItem>
         </Form>
-
-
       </div>
     )
   }

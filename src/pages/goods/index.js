@@ -1,12 +1,14 @@
 import React from 'react'
-import { Card, Table, message, Modal, Button, Form } from 'antd'
+import { Card, Table, message, Modal, Button, Form, Input, Select } from 'antd'
 import { withRouter } from 'react-router-dom'
 import axios from '../../axios'
-import FilterForm from './../../components/FilterForm'
 import Utils from '../../utils/utils'
+import EditGood from './editGood'
 import Goods1 from './index1'
-import Axios from 'axios';
+import Axios from 'axios'
 import './goods.less'
+const FormItem = Form.Item
+const Option = Select.Option
 
 export default class goods extends React.Component {
 
@@ -18,41 +20,44 @@ export default class goods extends React.Component {
   }
 
   params = {
-    pageNo: 1,
+    page: 1,
     pageSize: 10
   }
 
-  formList = [
-    {
-      type: 'INPUT',
-      label: '商品名称',
-      field: 'title',
-      placeholder: '按名称查询',
-      width: 250,
-    },
-    {
-      type: '时间查询'
-    },
-    {
-      type: 'SELECT',
-      label: '供应商',
-      field: 'supplier',
-      placeholder: '供应商',
-      width: 250,
-      list: this.state.supplierList
-    },
-  ]
-
   componentWillMount() {
-    this.requestList();
+    this.requestList()
   }
 
   requestList = () => {
     let _this = this
-    axios.requestList(_this, 'http://127.0.0.1:7300/mock/5c876e66150c56207006bd22/slide/szgdslide/admin/listGoods', {
+    axios.requestList(_this, '/szgdslide/admin/listGoods', {
       params: _this.params,
       isShowLoading: true
     })
+    Axios({
+      url: '/szgdslide/admin/listSuppliers',
+      data: { page: 1, pageSize: 50 },
+      method: 'get'
+    }).then((res) => {
+      if (res.status === 200) {
+        let data = res.data
+        let list = data.data.result
+        let supplierList = list.map((option) => {
+          return <Option value={option.id} key={option.id}>{option.name}</Option>
+        })
+        this.setState({
+          supplierList
+        })
+      }
+      console.log(res)
+    }).catch(() => {
+      message.error('获取供应商信息失败')
+    })
+  }
+
+  handleFilter = (params)=>{
+    this.params = Object.assign(this.params, params)
+    this.requestList()
   }
 
   //选中
@@ -68,13 +73,25 @@ export default class goods extends React.Component {
     })
   }
   //取消预览
-  handleCancel = () => this.setState({ imgVisible: false, editVisible: false })
+  handleCancel = () => this.setState({ imgVisible: false, editVisiable: false, goodsId: '' })
 
   //编辑商品
-  handleDetail = () => {
+  handleDetail = (record) => {
     this.setState({
-      editVisable: true
+      editVisiable: true,
+      goodsId: record.id
     })
+  }
+
+  //创建商品
+  newGood = (record) => {
+    this.setState({
+      editVisiable: true
+    })
+  }
+
+  onCanelEdit = () => {
+    this.handleCancel()
   }
 
   render() {
@@ -82,11 +99,11 @@ export default class goods extends React.Component {
       {
         title: '编号',
         dataIndex: 'id',
-        width: 100,
+        width: 80,
       },
       {
         title: '商品图',
-        dataIndex: 'img',
+        dataIndex: 'path',
         width: 100,
         render: (img) => {
           return (
@@ -108,22 +125,18 @@ export default class goods extends React.Component {
         title: '供应商',
         dataIndex: 'supplier',
         width: 100,
-      },
-      {
-        title: '时间',
-        dataIndex: 'time',
-        render: (time) => {
-          return Utils.formateDate(time)
+        render: (supplier) => {
+          return supplier.name
         }
       },
       {
         title: '销量',
-        dataIndex: 'sale_num',
+        dataIndex: 'saleNum',
         width: 100,
       },
       {
         title: '库存',
-        dataIndex: 'stock_num',
+        dataIndex: 'stockNum',
         width: 100,
       },
       {
@@ -145,7 +158,10 @@ export default class goods extends React.Component {
     return (
       <div className="full-height">
         <Card>
-          <FilterForm formList={this.formList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
+          <Button type="primary" onClick={this.newGood}>添加新商品</Button>
+        </Card>
+        <Card style={{ marginTop: 10 }}>
+          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
         </Card>
         <div className="content-wrap">
           <Table
@@ -160,10 +176,59 @@ export default class goods extends React.Component {
         <Modal visible={this.state.imgVisible} footer={null} onCancel={this.handleCancel}>
           <img style={{ width: '100%' }} src={this.state.bigImg} />
         </Modal>
-        <Modal visible={this.state.editVisible} footer={null} onCancel={this.handleCancel}>
-          <Goods1 />
+        <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
+          {this.state.editVisiable ? <EditGood goodsId={this.state.goodsId} supplierList={this.state.supplierList} onCanelEdit={this.onCanelEdit} /> : ''}
+          {/* <Goods1 /> */}
         </Modal>
       </div>
     );
   }
 }
+
+const FilterForm = Form.create({})(
+  class FilterForm extends React.Component {
+    query = () => {
+      const params = this.props.form.getFieldsValue()
+      this.props.filterSubmit(params)
+    }
+
+    reset = () => {
+      this.props.form.resetFields()
+      this.props.handleReset()
+    }
+
+    delete = () => {
+      this.props.handleDelete()
+    }
+    render() {
+      const { getFieldDecorator } = this.props.form
+      return (
+        <Form layout="inline">
+          <FormItem label="商品名称" key="name">
+            {
+              getFieldDecorator('name')(
+                <Input placeholder="商品名称" style={{ width: 150 }} />
+              )
+            }
+          </FormItem>
+          <FormItem label="供应商" key="supplier">
+            {
+              getFieldDecorator('supplier')(
+                <Select placeholder="供应商" style={{ width: 150 }} >
+                  {
+                    this.props.supplierList
+                  }
+                </Select>
+              )
+            }
+          </FormItem>
+          <FormItem>
+            <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
+            <Button onClick={this.reset} type="default" style={{ marginRight: 10 }}>重置</Button>
+            <Button onClick={this.reset} type="danger">删除</Button>
+          </FormItem>
+        </Form>
+      )
+    }
+  }
+)

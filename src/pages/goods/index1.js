@@ -30,11 +30,11 @@ export default class goods1 extends React.Component {
     const imageUrl = this.state.imageUrl;
     return (
       <Upload
-        name="avatar"
+        name="files"
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action="//jsonplaceholder.typicode.com/posts/"
+        action="/szgdslide/upload"
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >
@@ -57,7 +57,7 @@ function beforeUpload(file) {
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    Message.error('Image must smaller than 2MB!');
+    Message.error('图片大小不能 2MB!');
   }
   return isJPG && isLt2M;
 }
