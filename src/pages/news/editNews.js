@@ -1,19 +1,25 @@
 import React from 'react'
-import { Button, Card, Modal, Input, message } from 'antd'
+import { Button, Card, Modal, Input, Message } from 'antd'
 import { NavLink } from 'react-router-dom'
 import { Editor } from 'react-draft-wysiwyg'
+import { EditorState, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import draftjsToHtml from 'draftjs-to-html'
 import htmlToDraftjs from 'html-to-draftjs'
 import Axios from 'axios'
+import './edit.less'
 
 export default class EditNews extends React.Component {
   state = {
+    id: '',
     title: '',
-    showRichText: false,
-    content: '',
+    nrcontent: '',
     editorState: '',
     showBack: false,
+  }
+  Url = {
+    add: '/szgdslide/admin/addNew',
+    update: '/szgdslide/admin/updateNew'
   }
   componentWillMount() {
     this.initData()
@@ -21,40 +27,67 @@ export default class EditNews extends React.Component {
 
   initData = () => {
     let id = this.props.match.params.id
+    let _this = this
     if (id) {
       this.setState({
-        showBack: true
+        showBack: true,
+        id
       })
-      Axios.post('/szgdslide/admin/detailNews', {
-        id: id
+      Axios({
+        method: 'post',
+        url: '/szgdslide/admin/detailNew',
+        params: {
+          id
+        }
       })
         .then(function (res) {
-          this.setState({
-            id,
-            title: res.data.title,
-            content: htmlToDraftjs(res.data.content)
-          })
+          if (res.status === 200 && res.data.success === true) {
+            let data = res.data.data
+            const contentBlock = htmlToDraftjs(data.nrcontent);
+            const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+            const editorState = EditorState.createWithContent(contentState);
+
+            _this.setState({
+              ...data,
+              editorState: editorState,
+            })
+          }
         })
         .catch(function (error) {
-          message.warn('获取数据失败');
+          Message.warn('获取数据失败');
         });
     }
   }
 
   //提交
   handleSubmit = () => {
-    let { title, content } = this.state
-    content = draftjsToHtml(content)
-    Axios.post('/admin/detailNews', {
-      title,
-      content,
+    let { title, nrcontent, id, } = this.state
+    let url = id ? this.Url.update : this.Url.add
+    let newData = { title: title, nrcontent: nrcontent };
+    let updateData = { title, nrcontent, id,}
+    let data = id ? newData : updateData
+    Axios({
+      url: url,
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      transformRequest: [function (data) {
+        // 将数据转换为表单数据
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+      data: data
     })
       .then(function (res) {
-        if (res.status)
-          message('提交成功');
+        if (res.status === 200 && res.data.success === true)
+          Message.success('提交成功');
       })
       .catch(function (error) {
-        message('获取数据失败');
+        Message.error('更新失败');
       });
   }
 
@@ -72,9 +105,10 @@ export default class EditNews extends React.Component {
   }
 
   //内容变动
-  onEditorChange = (content) => {
+  onEditorChange = (nrcontent) => {
+    nrcontent = draftjsToHtml(nrcontent)
     this.setState({
-      content
+      nrcontent
     })
   }
 
@@ -85,15 +119,15 @@ export default class EditNews extends React.Component {
           {
             this.state.showBack ? <NavLink to="/news/list"><Button type="primary" icon="left">返回</Button></NavLink> : ''
           }
-          <Button type="primary" onClick={this.onHandleGetHtml} style={{ marginLeft: 10 }}>预览</Button>
           <Button type="primary" onClick={this.handleSubmit} style={{ marginLeft: 10 }}>提交</Button>
         </Card>
         <Card title="标题" style={{ marginTop: 10 }}>
-          <Input placeholder="标题" allowClear onChange={this.onChange} defaultValue={this.state.title} />
+          <Input placeholder="标题" onChange={this.titleChange} value={this.state.title} />
         </Card>
         <Card style={{ marginTop: -10 }}>
           <Editor
             editorState={this.state.editorState}
+            // contentState={this.state.nrcontent}
             toolbarClassName="toolbarClassName"
             wrapperClassName="wrapperClassName"
             editorClassName="editorClassName"
@@ -104,13 +138,15 @@ export default class EditNews extends React.Component {
         <Modal
           title="预览"
           visible={this.state.showRichText}
+          footer={false}
           onCancel={() => {
             this.setState({
               showRichText: false
             })
-          }}>
+          }}
+          style={{ width: 970, }}>
           {
-            <div dangerouslySetInnerHTML={{ __html: draftjsToHtml(this.state.contentState) }}>
+            <div className="preview" dangerouslySetInnerHTML={{ __html: this.state.nrcontent }}>
 
             </div>
           }

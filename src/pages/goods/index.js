@@ -1,10 +1,7 @@
 import React from 'react'
 import { Card, Table, message, Modal, Button, Form, Input, Select } from 'antd'
-import { withRouter } from 'react-router-dom'
 import axios from '../../axios'
-import Utils from '../../utils/utils'
 import EditGood from './editGood'
-import Goods1 from './index1'
 import Axios from 'axios'
 import './goods.less'
 const FormItem = Form.Item
@@ -20,7 +17,7 @@ export default class goods extends React.Component {
   }
 
   params = {
-    page: 1,
+    pageNo: 1,
     pageSize: 10
   }
 
@@ -36,7 +33,7 @@ export default class goods extends React.Component {
     })
     Axios({
       url: '/szgdslide/admin/listSuppliers',
-      data: { page: 1, pageSize: 50 },
+      data: { pageNo: 1, pageSize: 50 },
       method: 'get'
     }).then((res) => {
       if (res.status === 200) {

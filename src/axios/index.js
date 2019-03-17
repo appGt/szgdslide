@@ -1,13 +1,14 @@
 import axios from 'axios'
-import { Modal } from 'antd';
+import { Message } from 'antd';
 import Utils from '../utils/utils'
 export default class Axios {
 
   static requestList(_this, url, params) {
     this.ajax({
       url,
-      params: params.params,
+      data: params.params,
       loading: true,
+      method: 'post'
     }).then(data => {
       if (data && data.result) {
         let list = data.result.map((item, index) => {
@@ -16,8 +17,9 @@ export default class Axios {
         })
         _this.setState({
           list,
-          pagination: Utils.pagination(data, (current) => {
-            _this.params.page = current
+          pagination: Utils.pagination(data, (pageNo, pageSize) => {
+            _this.params.pageNo = pageNo
+            _this.params.pageSize = pageSize
             _this.requestList()
           })
         })
@@ -29,13 +31,24 @@ export default class Axios {
     if (options && options.loading) {
       document.querySelector('.loading').style.display = 'block'
     }
-    const { url, method='get', params } = options
+    const { url, method = 'get', params, data } = options
     return new Promise((resolve, reject) => {
       axios({
-        url,
-        method,
-        params,
-        
+        url: url,
+        method: method,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        transformRequest: [function (data) {
+          // 将数据转换为表单数据
+          let ret = ''
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+        data: data,
+        params
       }).then((res) => {
         if (options && options.loading) {
           document.querySelector('.loading').style.display = 'none'
@@ -45,10 +58,7 @@ export default class Axios {
           if (data.success === true) {
             resolve(data.data)
           } else {
-            Modal.warning({
-              title: '提示',
-              content: data.message || '获取失败'
-            })
+            Message.warning(options.errMsg || '获取失败')
           }
         } else {
           reject(res.message)
@@ -57,10 +67,7 @@ export default class Axios {
         if (options && options.loading) {
           document.querySelector('.loading').style.display = 'none'
         }
-        Modal.warning({
-          title: '提示',
-          content: options.errMsg || '获取失败'
-        })
+        Message.warning(options.errMsg || '获取失败')
       })
     })
   }

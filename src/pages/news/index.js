@@ -12,7 +12,7 @@ class News extends React.Component {
     orderConfirmVisable: false
   }
   params = {
-    page: 1,
+    pageNo: 1,
     pageSize: 10
   }
   formList = [
@@ -33,7 +33,9 @@ class News extends React.Component {
 
   //过滤
   handleFilter = (params) => {
-    this.params = Object.assign(this.params, params)
+    params.pageNo = this.params.pageNo
+    params.pageSize = this.params.pageSize
+    this.params = params
     if (this.params.start_time) {
       this.params.start_time = new Date(this.params.start_time).getTime()
     }
@@ -64,7 +66,7 @@ class News extends React.Component {
 
   handleDetail = (record, e) => {
     let id = record.id
-    this.props.history.push('/news/edit/'+id)
+    this.props.history.push('/news/edit/' + id)
   }
 
   requestList = () => {
@@ -93,11 +95,6 @@ class News extends React.Component {
         key: 'title'
       },
       {
-        title: '作者',
-        dataIndex: 'author',
-        key: 'author'
-      },
-      {
         title: '时间',
         dataIndex: 'time',
         key: 'time',
@@ -108,13 +105,16 @@ class News extends React.Component {
       {
         title: '点击量',
         key: 'browes',
-        dataIndex: 'browes'
+        dataIndex: 'browes',
+        render: (browes) => {
+          return browes || 0
+        }
       },
       {
         title: '操作',
         key: 'x',
         render: (text, record) => {
-          return <a href="javascript:;" onClick={(e)=>this.handleDetail(record,e)}>编辑</a>
+          return <a href="javascript:;" onClick={(e) => this.handleDetail(record, e)}>编辑</a>
         }
       }
     ]

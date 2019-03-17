@@ -9,17 +9,17 @@ export default {
   },
   pagination(data, callback) {
     return {
-      onChange: (current) => {
-        callback(current)
+      onChange: (current, pageSize) => {
+        callback(current, pageSize)
       },
-      current: data.page,
+      current: data.pageNo,
       pageSize: data.pageSize,
       total: data.totalCount,
       showSizeChanger: true,
       showTotal: () => {
         return `共${data.totalCount}条`
       },
-      showQuickJumper: true
+      // showQuickJumper: true
     }
   },
   // 格式化金额,单位:分(eg:430分=4.30元)
@@ -58,7 +58,7 @@ export default {
     }
     let options = [] //[<Option value="0" key="all_key">全部</Option>];
     data.map((item) => {
-      options.push(<Option value={item.id} key={item.id}>{item.name}</Option>)
+      return options.push(<Option value={item.id} key={item.id}>{item.name}</Option>)
     })
     return options;
   },

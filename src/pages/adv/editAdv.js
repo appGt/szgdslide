@@ -1,35 +1,36 @@
 import React from 'react'
 import { Input, Form, Message, Select, Upload, Button } from 'antd'
 import Axios from 'axios';
+import TextArea from 'antd/lib/input/TextArea';
 const FormItem = Form.Item
 
 
-class EditGood extends React.Component {
+class EditAdv extends React.Component {
   state = {
     data: '',
     loading: ''
   }
 
   componentWillMount() {
-    let goodsId = this.props.goodsId
-    if (goodsId) {
-      this.setState({ id: goodsId })
-      this.getGoods(goodsId)
+    let adverId = this.props.adverId
+    if (adverId) {
+      this.setState({ id: adverId })
+      this.getAdv(adverId)
     }
   }
 
-  getGoods = (goodsId) => {
+  getAdv = (adverId) => {
     Axios({
       method: 'post',
-      url: '/szgdslide/admin/detailGood',
-      params: { id: goodsId }
+      url: '/szgdslide/admin/detailAdver',
+      data: { id: adverId }
     }).then((res) => {
       let data = res.data
       this.setState({
         ...data.data
       })
     }).catch((err) => {
-      Message.error('获取商品信息失败')
+      Message.error('获取信息失败')
     })
   }
 
@@ -58,13 +59,13 @@ class EditGood extends React.Component {
     let data = this.props.form.getFieldsValue()
     data.path = this.state.path
     if (!data.path) {
-      Message.error('请上传商品图片')
+      Message.error('请上传广告图片')
       return
     }
     Axios({
-      url: '/szgdslide/admin/updateGood',
+      url: '/szgdslide/admin/updateAdver',
       method: 'post',
-      data: data
+      prarms: data
     }).then((res)=>{
       if(res.status === 200){
         if(res.data.data.status){
@@ -80,50 +81,33 @@ class EditGood extends React.Component {
     const { getFieldDecorator } = this.props.form
     return (
       <Form layout="vertical">
-        <FormItem label="商品名称" key="name">
+        <FormItem label="标题" key="title">
           {
-            getFieldDecorator('name', {
+            getFieldDecorator('title', {
               rules: [
                 {
                   required: true,
-                  message: '请输入商品名称',
+                  message: '请输入标题',
                 }
               ],
-              initialValue: this.state.name
+              initialValue: this.state.title
             })(
-              <Input placeholder="商品名称" />
+              <Input placeholder="标题" />
             )
           }
         </FormItem>
-        <FormItem label="库存" key="stock">
+        <FormItem label="描述" key="nrcontent">
           {
-            getFieldDecorator('stock', {
+            getFieldDecorator('nrcontent', {
               rules: [
                 {
                   required: true,
-                  message: '请输入货物数量'
+                  message: '描述',
                 }
               ],
-              initialValue: this.state.stockNum
+              initialValue: this.state.nrcontent
             })(
-              <Input placeholder="库存" />
-            )
-          }
-        </FormItem>
-        <FormItem label="供应商" key="supplier">
-          {
-            getFieldDecorator('supplier', {
-              rules: [
-                {
-                  required: true,
-                  message: '请选择供应商',
-                }
-              ],
-              initialValue: this.state.supplierId
-            })(
-              <Select>
-                {this.props.supplierList}
-              </Select>
+              <TextArea placeholder="描述" col="30"/>
             )
           }
         </FormItem>
@@ -140,10 +124,10 @@ class EditGood extends React.Component {
             上传图片
         </Button>
         </Upload>
-        <div style={{ marginTop: 10, marginBottom: 10, width: 200, height: 200 }} >
-          <img style={{ width: 200, height: 200 }} src={
-            this.state.path || 'http://dummyimage.com/200x200'
-          } alt="商品" />
+        <div style={{ marginTop: 10, marginBottom: 10, width: 'auto'}} >
+          <img style={{ width: '100%' }} src={
+            this.state.path || 'http://dummyimage.com/715x414'
+          } alt="广告" />
         </div>
         <FormItem>
           <Button onClick={this.Submit} type="primary" style={{ marginRight: 10 }}>提交</Button>
@@ -153,4 +137,4 @@ class EditGood extends React.Component {
   }
 }
 
-export default Form.create({})(EditGood)
+export default Form.create({})(EditAdv)

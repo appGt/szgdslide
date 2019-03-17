@@ -6,7 +6,13 @@ const Option = Select.Option
 class FilterForm extends React.Component {
   query = () => {
     const params = this.props.form.getFieldsValue()
-    this.props.filterSubmit(params)
+    let obj = {}
+    for(let key in params){
+      if(params[key]){
+        obj[key]= params[key]
+      }
+    }
+    this.props.filterSubmit(obj)
   }
 
   reset = () => {
@@ -30,7 +36,7 @@ class FilterForm extends React.Component {
             let start_time = <FormItem label="按时间范围" key="start_time">
               {
                 getFieldDecorator('start_time')(
-                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD" />
+                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD HH:mm:ss" />
                 )
               }
             </FormItem>
@@ -39,7 +45,7 @@ class FilterForm extends React.Component {
             let end_time = <FormItem label="~" key="end_time">
               {
                 getFieldDecorator('end_time')(
-                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD" />
+                  <DatePicker showTime={true} disabledHours format="YYYY-MM-DD HH:mm:ss" />
                 )
               }
             </FormItem>

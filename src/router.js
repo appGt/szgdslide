@@ -19,6 +19,7 @@ import WebNews from './pages/cWeb/news/news'
 import WebVideo from './pages/cWeb/video/video'
 import WebShop from './pages/cWeb/shop/shop'
 import WebBBS from './pages/cWeb/bbs/bbs'
+import Detail from './pages/cWeb/detail/detail'
 
 export default class Router extends React.Component {
   render() {
@@ -34,6 +35,7 @@ export default class Router extends React.Component {
                 <Route path="/web/video" exact component={WebVideo} />
                 <Route path="/web/shop" exact component={WebShop} />
                 <Route path="/web/bbs" exact component={WebBBS} />
+                <Route path="/web/:type/:id" exact component={Detail} />
               </Switch>
 
             }></Route>
