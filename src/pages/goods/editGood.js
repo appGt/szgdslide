@@ -7,7 +7,12 @@ const FormItem = Form.Item
 class EditGood extends React.Component {
   state = {
     data: '',
-    loading: ''
+    loading: false
+  }
+
+  Url = {
+    add: '/szgdslide/admin/addGood',
+    update: '/szgdslide/admin/updateGoods'
   }
 
   componentWillMount() {
@@ -39,7 +44,7 @@ class EditGood extends React.Component {
         loading: true
       })
     }
-    if (info.file.status === 'done' && info.file.response.status) {
+    if (info.file.status === 'done' && info.file.response.success === true) {
       Message.success(`${info.file.name} 上传成功`);
       this.setState({
         path: '/szgdslide/files/' + info.file.name,
@@ -57,18 +62,30 @@ class EditGood extends React.Component {
   Submit = () => {
     let data = this.props.form.getFieldsValue()
     data.path = this.state.path
+    let url = this.state.id ? this.Url.update : this.Url.add
+    if(this.state.id){
+      data.id = this.state.id
+    }
     if (!data.path) {
       Message.error('请上传商品图片')
       return
     }
     Axios({
-      url: '/szgdslide/admin/updateGood',
+      url: url,
       method: 'post',
-      data: data
+      data: data,
+      transformRequest: [function (data) {
+        // 将数据转换为表单数据
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
     }).then((res)=>{
       if(res.status === 200){
-        if(res.data.data.status){
-          Message.error('更新成功')
+        if(res.data.success){
+          Message.success('更新成功')
         }
       }
     }).catch(()=>{
@@ -110,9 +127,9 @@ class EditGood extends React.Component {
             )
           }
         </FormItem>
-        <FormItem label="供应商" key="supplier">
+        <FormItem label="供应商" key="supplierId">
           {
-            getFieldDecorator('supplier', {
+            getFieldDecorator('supplierId', {
               rules: [
                 {
                   required: true,

@@ -65,7 +65,7 @@ export default class EditNews extends React.Component {
     let url = id ? this.Url.update : this.Url.add
     let newData = { title: title, nrcontent: nrcontent };
     let updateData = { title, nrcontent, id,}
-    let data = id ? newData : updateData
+    let data = id ? updateData : newData
     Axios({
       url: url,
       method: 'post',

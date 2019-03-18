@@ -13,6 +13,7 @@ export default class Adv extends React.Component {
     imgVisible: false,
     supplierList: [],
     editVisable: false,
+    adverId: ''
   }
 
   params = {
@@ -51,17 +52,17 @@ export default class Adv extends React.Component {
     })
   }
   //取消预览
-  handleCancel = () => this.setState({ imgVisible: false, editVisiable: false, adversId: '' })
+  handleCancel = () => this.setState({ imgVisible: false, editVisiable: false, adverId: '' })
 
-  //编辑商品
+  //编辑
   handleDetail = (record) => {
     this.setState({
       editVisiable: true,
-      adversId: record.id
+      adverId: record.id
     })
   }
 
-  //创建商品
+  //创建
   newAdv = () => {
     this.setState({
       editVisiable: true
@@ -117,7 +118,7 @@ export default class Adv extends React.Component {
     return (
       <div className="full-height">
         <Card>
-          <Button type="primary" onClick={this.newGood}>添加新广告</Button>
+          <Button type="primary" onClick={this.newAdv}>添加新广告</Button>
         </Card>
         <Card style={{ marginTop: 10 }}>
           <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
@@ -136,7 +137,7 @@ export default class Adv extends React.Component {
           <img style={{ width: '100%' }} src={this.state.bigImg} />
         </Modal>
         <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
-          {this.state.editVisiable ? <EditAdv adverId={this.state.adverId} onCanelEdit={this.onCanelEdit} /> : ''}
+          {this.state.editVisiable ? <EditAdv adverId={this.state.adverId} onCanelEdit={this.onCanelEdit} handleEditSuc={this.requestList} /> : ''}
         </Modal>
       </div>
     );
@@ -149,11 +150,6 @@ const FilterForm = Form.create({})(
       const params = this.props.form.getFieldsValue()
       this.props.filterSubmit(params)
     }
-
-    // reset = () => {
-    //   this.props.form.resetFields()
-    //   this.props.handleReset()
-    // }
 
     delete = () => {
       this.props.handleDelete()

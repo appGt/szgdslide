@@ -8,7 +8,11 @@ const FormItem = Form.Item
 class EditAdv extends React.Component {
   state = {
     data: '',
-    loading: ''
+    loading: false
+  }
+  Url = {
+    add: '/szgdslide/admin/addAdver',
+    update: '/szgdslide/admin/updateAdver'
   }
 
   componentWillMount() {
@@ -23,7 +27,15 @@ class EditAdv extends React.Component {
     Axios({
       method: 'post',
       url: '/szgdslide/admin/detailAdver',
-      data: { id: adverId }
+      data: { id: adverId },
+      transformRequest: [function (data) {
+        // 将数据转换为表单数据
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
     }).then((res) => {
       let data = res.data
       this.setState({
@@ -40,7 +52,7 @@ class EditAdv extends React.Component {
         loading: true
       })
     }
-    if (info.file.status === 'done' && info.file.response.status) {
+    if (info.file.status === 'done' && info.file.response.success === true) {
       Message.success(`${info.file.name} 上传成功`);
       this.setState({
         path: '/szgdslide/files/' + info.file.name,
@@ -58,18 +70,34 @@ class EditAdv extends React.Component {
   Submit = () => {
     let data = this.props.form.getFieldsValue()
     data.path = this.state.path
+    let url = this.state.id ? this.Url.update : this.Url.add
+    if(this.state.id){
+      data.id = this.state.id
+    }
     if (!data.path) {
       Message.error('请上传广告图片')
       return
     }
+    if(this.state.id){
+      data.id = this.state.id
+    }
     Axios({
-      url: '/szgdslide/admin/updateAdver',
+      url: url,
       method: 'post',
-      prarms: data
+      data: data,
+      transformRequest: [function (data) {
+        // 将数据转换为表单数据
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
     }).then((res)=>{
       if(res.status === 200){
-        if(res.data.data.status){
-          Message.error('更新成功')
+        if(res.data.success === true){
+          Message.success('更新成功')
+          this.props.handleEditSuc()
         }
       }
     }).catch(()=>{
