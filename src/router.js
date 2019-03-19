@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import { Switch, Route, HashRouter } from 'react-router-dom'
 import App from './App'
 import AdminLogin from './pages/adminLogin'
 import AdminLayout from './adminLayout'
@@ -24,7 +24,7 @@ import Detail from './pages/cWeb/detail/detail'
 export default class Router extends React.Component {
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <App>
           <Switch>
             <Route path="/adminLogin" component={AdminLogin}></Route>
@@ -61,7 +61,7 @@ export default class Router extends React.Component {
             <Route component={NoMatch} />
           </Switch>
         </App>
-      </BrowserRouter>
+      </HashRouter>
     )
   }
 }
