@@ -5,7 +5,9 @@ export default {
   formateDate(time) {
     if (!time) return '';
     let date = new Date(time);
-    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    let seconds = date.getSeconds()
+    seconds = seconds>= 10 ? seconds : '0' + seconds
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + seconds;
   },
   pagination(data, callback) {
     return {

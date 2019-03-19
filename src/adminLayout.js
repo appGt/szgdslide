@@ -1,12 +1,26 @@
 import React from 'react'
 import { Layout, Icon } from 'antd'
+import { NavLink } from 'react-router-dom'
 import MenuList from './components/NavLeft'
+import { withRouter } from 'react-router-dom'
 import './style/common.less'
+import Axios from 'axios';
 const { Sider, Header, Content } = Layout
 
-export default class AdminLayout extends React.Component {
+class AdminLayout extends React.Component {
   state = {
     collapsed: false,
+  }
+
+  loginOut = () => {
+    Axios({
+      url: '/szgdslide/admin/logout'
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        localStorage.removeItem('isLogin')
+        this.props.history.push('/adminlogin')
+      }
+    })
   }
 
   onNavLeftToggle = () => {
@@ -33,6 +47,8 @@ export default class AdminLayout extends React.Component {
               type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.onNavLeftToggle}
             />
+            <a onClick={this.loginOut} style={{ float: 'right', marginRight: 50 }} href="#">退出登录</a>
+            <NavLink to="/" style={{ float: 'right', marginRight: 20 }}>首页</NavLink>
           </Header>
           <Content className="content">
             {
@@ -44,3 +60,5 @@ export default class AdminLayout extends React.Component {
     )
   }
 }
+
+export default withRouter(AdminLayout)

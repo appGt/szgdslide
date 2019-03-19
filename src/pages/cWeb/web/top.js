@@ -5,7 +5,7 @@ function Top(props) {
   return (
     <div className="web-top">
       <div className="web-logo">
-        滑板网
+        <img src="/asset/logo.png" alt=""/>
        </div>
     </div>
   )

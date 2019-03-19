@@ -24,7 +24,7 @@ class AdminLogin extends React.Component {
       if (res.status === 200) {
         if (res.data.success === true && res.data.message === '已经登录') {
           localStorage.setItem('isLogin', true)
-          this.props.history.push('/')
+          this.props.history.push('/admin')
         }
       }
     })
@@ -48,6 +48,8 @@ class AdminLogin extends React.Component {
         let data = this.props.form.getFieldsValue()
         if (data.remember === true) {
           localStorage.setItem('remember', JSON.stringify(data))
+        } else {
+          localStorage.removeItem('remember')
         }
         var params = new URLSearchParams();
         params.append('username', data.username);
@@ -60,7 +62,7 @@ class AdminLogin extends React.Component {
           if (res.status === 200) {
             if (res.data.success === true) {
               localStorage.setItem('isLogin', true)
-              this.props.history.push('/')
+              this.props.history.push('/admin')
             }
           }
         }).catch(() => {

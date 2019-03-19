@@ -1,27 +1,27 @@
 const menuList = [
     {
         title: '首页',
-        key: '/home',
+        key: '/admin/home',
         icon: 'home'
     },
     {
         title: '新闻管理',
-        key: '/news',
+        key: '/admin/news',
         icon: 'file-text',
         children: [
             {
                 title: '新闻总览',
-                key: '/news/list',
+                key: '/admin/news/list',
             },
             {
                 title: '发布新闻',
-                key: '/news/edit/',
+                key: '/admin/news/edit/',
             },
         ]
     },
     {
         title: '广告管理',
-        key: '/adv',
+        key: '/admin/adv',
         icon: 'appstore',
         // children: [
         //     {
@@ -32,7 +32,7 @@ const menuList = [
     },
     {
         title: '视频管理',
-        key: '/video',
+        key: '/admin/video',
         icon: 'video-camera',
         // children: [
         //     {
@@ -43,22 +43,22 @@ const menuList = [
     },
     {
         title: '用户',
-        key: '/user',
+        key: '/admin/user',
         icon: 'user'
     },
     {
         title: '社区管理',
-        key: '/bbs',
+        key: '/admin/bbs',
         icon: 'team'
     },
     {
         title: '商品管理',
-        key: '/goods',
+        key: '/admin/goods',
         icon: 'shopping'
     },
     {
         title: '订单管理',
-        key: '/order',
+        key: '/admin/order',
         icon: 'file-text'
     },
 ];

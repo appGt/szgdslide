@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, HashRouter, Route } from 'react-router-dom'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
 import App from './App'
 import AdminLogin from './pages/adminLogin'
 import AdminLayout from './adminLayout'
@@ -24,44 +24,44 @@ import Detail from './pages/cWeb/detail/detail'
 export default class Router extends React.Component {
   render() {
     return (
-      <HashRouter>
+      <BrowserRouter>
         <App>
           <Switch>
             <Route path="/adminLogin" component={AdminLogin}></Route>
-            <Route path="/web" render={() =>
-              <Switch>
-                <Route path="/web" exact component={Web} />
-                <Route path="/web/news" exact component={WebNews} />
-                <Route path="/web/video" exact component={WebVideo} />
-                <Route path="/web/shop" exact component={WebShop} />
-                <Route path="/web/bbs" exact component={WebBBS} />
-                <Route path="/web/:type/:id" exact component={Detail} />
-              </Switch>
-
-            }></Route>
-            <Route path="/" render={() =>
+            <Route path="/admin" render={() =>
               <AdminLayout>
                 <Switch>
-                  <Route path="/" exact component={Welcome} />
-                  <Route path="/home" exact component={Welcome} />
-                  <Route path="/news/list" component={News} />
-                  <Route path="/news/edit/:id" component={EditNews} />
-                  <Route path="/news/edit/" component={EditNews} />
-                  <Route path="/adv" component={Adv} />
-                  <Route path="/order" component={Order} />
-                  <Route path="/video" component={Video} />
-                  <Route path="/goods" component={Goods} />
-                  <Route path="/bbs" component={BBS} />
-                  <Route path="/user" component={User} />
+                  <Route path="/admin" exact component={Welcome} />
+                  <Route path="/admin/home" component={Welcome} />
+                  <Route path="/admin/news/list"  component={News} />
+                  <Route path="/admin/news/edit/:id"  component={EditNews} />
+                  <Route path="/admin/news/edit/"  component={EditNews} />
+                  <Route path="/admin/adv"  component={Adv} />
+                  <Route path="/admin/order"  component={Order} />
+                  <Route path="/admin/video"  component={Video} />
+                  <Route path="/admin/goods"  component={Goods} />
+                  <Route path="/admin/bbs"  component={BBS} />
+                  <Route path="/admin/user"  component={User} />
                   <Route component={NoMatch} />
                 </Switch>
               </AdminLayout>
 
             }></Route>
+            <Route path="/" render={() =>
+              <Switch>
+                <Route path="/" exact component={Web} />
+                <Route path="/news" exact component={WebNews} />
+                <Route path="/video" exact component={WebVideo} />
+                <Route path="/shop" exact component={WebShop} />
+                <Route path="/bbs" exact component={WebBBS} />
+                <Route path="/:type/:id" exact component={Detail} />
+              </Switch>
+
+            }></Route>
             <Route component={NoMatch} />
           </Switch>
         </App>
-      </HashRouter>
+      </BrowserRouter>
     )
   }
 }
