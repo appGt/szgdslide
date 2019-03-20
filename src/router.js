@@ -54,6 +54,7 @@ export default class Router extends React.Component {
                 <Route path="/video" exact component={WebVideo} />
                 <Route path="/shop" exact component={WebShop} />
                 <Route path="/bbs" exact component={WebBBS} />
+                <Route path="/bbs/:id" exact component={WebBBS} />
                 <Route path="/:type/:id" exact component={Detail} />
               </Switch>
 

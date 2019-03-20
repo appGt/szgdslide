@@ -1,9 +1,9 @@
 import React from 'react'
-import { Layout, Icon, Row, Col, Avatar } from 'antd'
-import './bbs.less'
+import { Avatar, Drawer, Input, Form, Button, Message } from 'antd'
+import { NavLink } from 'react-router-dom'
 import Axios from 'axios';
 import Utils from './../../../utils/utils'
-const { Sider, Header, Content } = Layout
+import './bbs.less'
 
 export default class BBS extends React.Component {
   params = {
@@ -13,10 +13,50 @@ export default class BBS extends React.Component {
   colorList = ["#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#34495E", "#F1C40F", "#E67E22", "#E74C3C", "#ECF0F1", "#95A5A6", "#7F8C8D", "#BDC3C7", "#C0392B", "#D35400", "#F39C12", "#2C3E50", "#8E44AD", "#2980B9", "#27AE60", "#16A085"]
 
   state = {
-    sendList: []
+    sendList: [],
+    visible: false,
   }
   componentWillMount() {
     this.requestSendList()
+  }
+
+  addNewSend = () => {
+    this.setState({
+      visible: true,
+    })
+  }
+
+  onClose = () => {
+    this.setState({
+      visible: false,
+    })
+  }
+
+  SubmitSend = (data) => {
+    let _this = this
+    data.sednId = 1
+    Axios({
+      method: 'post',
+      url: '/szgdslide/admin/addSend',
+      data: data,
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        Message.success('发布成功')
+        _this.setState({
+          visible: false,
+        })
+        _this.requestSendList()
+      } else {
+        Message.error('发布失败')
+      }
+    })
   }
 
   requestSendList() {
@@ -37,15 +77,16 @@ export default class BBS extends React.Component {
   }
 
   getSendList = (list) => {
-    return list.map((item, i) => {
+    return list.map((Item, i) => {
       let data = {}
-      data.name = item.user.userdesc
-      data.title = item.title
-      data.time = Utils.formateDate(item.time)
-      data.num = item.num
+      data.name = Item.user.userdesc
+      data.title = Item.title
+      data.time = Utils.formateDate(Item.time)
+      data.num = Item.num
       data.avatar = data.name.split('')[0]
       data.color = this.colorList[i]
-      return <Send {...data} key={i}/>
+      data.id = Item.id
+      return <Send {...data} key={i} />
     })
   }
 
@@ -53,21 +94,81 @@ export default class BBS extends React.Component {
     return (
       <div className="send">
         <ul className="send-list">
+          <Button onClick={this.addNewSend} style={{ marginBottom: 20 }}>发布新主题</Button>
           {this.state.sendList}
         </ul>
         <div className="person-info"></div>
-
+        <Drawer
+          title="新帖子"
+          placement="bottom"
+          closable={false}
+          onClose={this.onClose}
+          visible={this.state.visible}
+          height="400"
+        >
+          <BottomForm onSubmit={this.SubmitSend} />
+        </Drawer>
       </div>
     )
   }
 }
+
+const BottomForm = Form.create({})(
+  class Content extends React.Component {
+    onSubmit = () => {
+      this.props.form.validateFields((err, values) => {
+        if (!err) {
+          this.props.onSubmit(values)
+        }
+      })
+    }
+    render() {
+      const { getFieldDecorator } = this.props.form
+      return (
+        <Form>
+          <Form.Item className="Item" label="title">
+            {
+              getFieldDecorator('title', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入标题'
+                  }
+                ]
+              })(
+                <Input placeholder="标题" />
+              )
+            }
+          </Form.Item>
+          <Form.Item className="Item" label="nrcontent">
+            {
+              getFieldDecorator('nrcontent', {
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入描述'
+                  }
+                ]
+              })(<Input.TextArea rows={4} placeholder="描述" />)
+            }
+          </Form.Item>
+          <Form.Item>
+            <Button onClick={this.onSubmit}>发布</Button>
+          </Form.Item>
+        </Form>
+      )
+
+    }
+  }
+)
+
 
 function Send(props) {
   return (
     <li className="send-item" >
       <Avatar size={50} className="avatar" style={{ backgroundColor: props.color }}>{props.avatar}</Avatar>
       <div className="txt">
-        <h3 className="title">{props.title}</h3>
+        <h3 className="title"><NavLink to={"/bbs/" + props.id}>{props.title}</NavLink></h3>
         <p><span className="time">{props.time}</span>  {props.name}</p>
       </div>
       <div className="num">
