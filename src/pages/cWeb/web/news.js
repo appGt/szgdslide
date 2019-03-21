@@ -1,6 +1,5 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Carousel } from 'antd'
 import Axios from 'axios';
 
 export default class Body extends React.Component {
@@ -26,9 +25,9 @@ export default class Body extends React.Component {
     }).then((res) => {
       if (res.status === 200 && res.data.success) {
         let list = res.data.data.result
-        list = list.map((item) => {
+        list = list.map((item,i) => {
           return (
-            <li><NavLink to={`/web/adv/${item.id}`}>{item.title}</NavLink></li>
+            <li key={i}><NavLink to={`/web/adv/${item.id}`}>{item.title}</NavLink></li>
           )
         })
         this.setState({

@@ -1,10 +1,13 @@
 import React from 'react'
-import { Avatar, Drawer, Input, Form, Button, Message } from 'antd'
+import { Avatar, Drawer, Input, Form, Button, Message, Affix, Layout } from 'antd'
 import { NavLink } from 'react-router-dom'
 import Axios from 'axios';
 import Utils from './../../../utils/utils'
+import UserLogin from './../components/UserLogin'
+import UserInfo from './../components/UserInfo'
+import CommonHeader from './../components/CommonHeader'
 import './bbs.less'
-
+const { Header } = Layout
 export default class BBS extends React.Component {
   params = {
     pageSize: 10,
@@ -15,12 +18,65 @@ export default class BBS extends React.Component {
   state = {
     sendList: [],
     visible: false,
+    loginVisable: false,
+    userData: {},
+    isLogin: false,
   }
   componentWillMount() {
+    this.isLogined()
     this.requestSendList()
   }
 
+  isLogined = () => {
+    let _this = this
+    let isLogin = localStorage.getItem('userLogin')
+    if (isLogin === 'true') {
+      Axios({
+        method: 'get',
+        url: '/szgdslide/admin/isLogined',
+        data: { front: true },
+        transformRequest: [function (data) {
+          let ret = ''
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+      }).then((res) => {
+        if (res.status === 200 && res.data.success) {
+          _this.setState({
+            isLogin: isLogin === 'true',
+            userData: res.data.data
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+  }
+
+  logout = () => {
+    Axios({
+      method: 'get',
+      url: '/szgdslide/admin/logout',
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        this.setState({
+          isLogin: false,
+          userData: {}
+        })
+        localStorage.removeItem('userLogin')
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
   addNewSend = () => {
+    if (!this.state.isLogin) {
+      Message.error('请先登录')
+      return
+    }
     this.setState({
       visible: true,
     })
@@ -35,27 +91,41 @@ export default class BBS extends React.Component {
   SubmitSend = (data) => {
     let _this = this
     data.sednId = 1
-    Axios({
-      method: 'post',
-      url: '/szgdslide/admin/addSend',
-      data: data,
-      transformRequest: [function (data) {
-        let ret = ''
-        for (let it in data) {
-          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    return new Promise((resolve, reject) => {
+      Axios({
+        method: 'post',
+        url: '/szgdslide/admin/addSend',
+        data: data,
+        transformRequest: [function (data) {
+          let ret = ''
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+      }).then((res) => {
+        if (res.status === 200 && res.data.success) {
+          Message.success('发布成功')
+          _this.setState({
+            visible: false,
+          })
+          _this.requestSendList()
+          resolve({ status: true })
+        } else {
+          Message.error('发布失败')
+          reject({ status: false })
         }
-        return ret
-      }],
-    }).then((res) => {
-      if (res.status === 200 && res.data.success) {
-        Message.success('发布成功')
-        _this.setState({
-          visible: false,
-        })
-        _this.requestSendList()
-      } else {
-        Message.error('发布失败')
-      }
+      }).catch((err) => {
+        reject({ status: false })
+      })
+    })
+  }
+
+  //登录成功
+  handleLogin = (userData) => {
+    this.setState({
+      isLogin: true,
+      userData: userData
     })
   }
 
@@ -92,23 +162,32 @@ export default class BBS extends React.Component {
 
   render() {
     return (
-      <div className="send">
-        <ul className="send-list">
-          <Button onClick={this.addNewSend} style={{ marginBottom: 20 }}>发布新主题</Button>
-          {this.state.sendList}
-        </ul>
-        <div className="person-info"></div>
-        <Drawer
-          title="新帖子"
-          placement="bottom"
-          closable={false}
-          onClose={this.onClose}
-          visible={this.state.visible}
-          height="400"
-        >
-          <BottomForm onSubmit={this.SubmitSend} />
-        </Drawer>
-      </div>
+      <Layout style={{ backgroundColor: '#fff' }}>
+        <CommonHeader />
+        <div className="send">
+          <ul className="send-list">
+            <Button onClick={this.addNewSend} style={{ marginBottom: 20 }}>发布新主题</Button>
+            {this.state.sendList}
+          </ul>
+          <Affix className="person-info">
+            <div>
+              {
+                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} /> : <UserLogin handleLogin={this.handleLogin} />
+              }
+            </div>
+          </Affix>
+          <Drawer
+            title="新帖子"
+            placement="bottom"
+            closable={false}
+            onClose={this.onClose}
+            visible={this.state.visible}
+            height="400"
+          >
+            <BottomForm onSubmit={this.SubmitSend} />
+          </Drawer>
+        </div>
+      </Layout>
     )
   }
 }
@@ -118,7 +197,12 @@ const BottomForm = Form.create({})(
     onSubmit = () => {
       this.props.form.validateFields((err, values) => {
         if (!err) {
-          this.props.onSubmit(values)
+          this.props.onSubmit(values).then((res) => {
+            this.props.form.setFieldsValue({
+              title: '',
+              content: ''
+            })
+          })
         }
       })
     }
@@ -140,9 +224,9 @@ const BottomForm = Form.create({})(
               )
             }
           </Form.Item>
-          <Form.Item className="Item" label="nrcontent">
+          <Form.Item className="Item" label="描述">
             {
-              getFieldDecorator('nrcontent', {
+              getFieldDecorator('content', {
                 rules: [
                   {
                     required: true,

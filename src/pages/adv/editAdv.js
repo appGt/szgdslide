@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Message, Select, Upload, Button } from 'antd'
+import { Input, Form, Message, Upload, Button } from 'antd'
 import Axios from 'axios';
 import TextArea from 'antd/lib/input/TextArea';
 const FormItem = Form.Item

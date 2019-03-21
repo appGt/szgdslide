@@ -26,10 +26,10 @@ export default class Body extends React.Component {
     }).then((res) => {
       if (res.status === 200 && res.data.success) {
         let list = res.data.data.result
-        list = list.map((item) => {
+        list = list.map((item,i) => {
           return (
 
-            <div className="carousel-item">
+            <div className="carousel-item" key={i}>
               <NavLink to={`/web/new/${item.id}`}><img src={item.path} alt="carousel" /></NavLink>
               <NavLink to={`/web/new/${item.id}`}><p className="text">{item.title}</p></NavLink>
             </div>

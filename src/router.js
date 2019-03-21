@@ -27,7 +27,7 @@ export default class Router extends React.Component {
       <HashRouter>
         <App>
           <Switch>
-            <Route path="/adminLogin" component={AdminLogin}></Route>
+            <Route path="/adminLogin" exact component={AdminLogin}></Route>
             <Route path="/admin" render={() =>
               <AdminLayout>
                 <Switch>
