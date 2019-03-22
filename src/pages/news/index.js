@@ -66,7 +66,7 @@ class News extends React.Component {
 
   handleDetail = (record, e) => {
     let id = record.id
-    this.props.history.push('/news/edit/' + id)
+    this.props.history.push('/admin/news/edit/' + id)
   }
 
   requestList = () => {

@@ -1,9 +1,11 @@
 import React from 'react'
-import { Message } from 'antd'
+import { Message,Breadcrumb } from 'antd'
 import Nav from './../web/nav'
 import Top from './../web/top'
 import Axios from 'axios';
 import './../web/web.less'
+import './detail.less'
+import Utils from './../../../utils/utils'
 export default class Detail extends React.Component {
   state = {
     data: {}
@@ -54,12 +56,22 @@ export default class Detail extends React.Component {
       <div className="web-body">
         <Top />
         <Nav />
-        <div className="title">
-          {this.state.data.title}
-        </div>
-        <div className="info"></div>
-        <div className="content">
-          <div dangerouslySetInnerHTML={{ __html: this.state.data.nrcontent }}></div>
+        <Breadcrumb style={{marginTop:20}}>
+          <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
+          <Breadcrumb.Item>{this.state.data.title}</Breadcrumb.Item>
+        </Breadcrumb>
+        <div className="article">
+          <div >
+            <h3 className="title">{this.state.data.title}</h3>
+          </div>
+          <div className="info">
+            <span className="time" style={{ color: '#ccc' }}>
+              {Utils.formateDate(this.state.data.time)}
+            </span>
+          </div>
+          <div className="text-content">
+            <div dangerouslySetInnerHTML={{ __html: this.state.data.nrcontent }}></div>
+          </div>
         </div>
       </div>
     )

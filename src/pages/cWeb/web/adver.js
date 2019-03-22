@@ -30,8 +30,8 @@ export default class Body extends React.Component {
           return (
 
             <div className="carousel-item" key={i}>
-              <NavLink to={`/web/new/${item.id}`}><img src={item.path} alt="carousel" /></NavLink>
-              <NavLink to={`/web/new/${item.id}`}><p className="text">{item.title}</p></NavLink>
+              <NavLink to={`/adv/${item.id}`}><img src={item.path} alt="carousel" /></NavLink>
+              <NavLink to={`/adv/${item.id}`}><p className="text">{item.title}</p></NavLink>
             </div>
 
           )

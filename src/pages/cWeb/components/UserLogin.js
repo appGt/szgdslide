@@ -24,9 +24,11 @@ class UserLogin extends React.Component {
           if (res.status === 200 && res.data.success) {
             localStorage.setItem('userLogin', 'true')
             this.props.handleLogin(res.data.data)
+          } else {
+            Message.error(res.data.message || '登录失败')
           }
         }).catch((err) => {
-          Message.erros('登录失败')
+          Message.error('登录失败')
         })
       }
     })

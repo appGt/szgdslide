@@ -27,7 +27,7 @@ export default class Body extends React.Component {
         let list = res.data.data.result
         list = list.map((item,i) => {
           return (
-            <li key={i}><NavLink to={`/web/adv/${item.id}`}>{item.title}</NavLink></li>
+            <li key={i}><NavLink to={`/news/${item.id}`}>{item.title}</NavLink></li>
           )
         })
         this.setState({
@@ -36,6 +36,12 @@ export default class Body extends React.Component {
       }
     })
   }
+
+  componentWillUnmount = () => {
+    this.setState = (state,callback)=>{
+      return;
+    };
+}
   render() {
     return (
       <ul>

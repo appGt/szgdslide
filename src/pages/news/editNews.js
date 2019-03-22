@@ -36,14 +36,22 @@ export default class EditNews extends React.Component {
       Axios({
         method: 'post',
         url: '/szgdslide/admin/detailNew',
-        params: {
+        data: {
           id
-        }
+        },
+        transformRequest: [function (data) {
+          // 将数据转换为表单数据
+          let ret = ''
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
       })
-        .then(function (res) {
+        .then((res) => {
           if (res.status === 200 && res.data.success === true) {
             let data = res.data.data
-            const contentBlock = htmlToDraftjs(data.nrcontent);
+            const contentBlock = htmlToDraftjs(data.nrcontent || '');
             const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
             const editorState = EditorState.createWithContent(contentState);
 
@@ -53,7 +61,7 @@ export default class EditNews extends React.Component {
             })
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           Message.warn('获取数据失败');
         });
     }
@@ -64,7 +72,7 @@ export default class EditNews extends React.Component {
     let { title, nrcontent, id, } = this.state
     let url = id ? this.Url.update : this.Url.add
     let newData = { title: title, nrcontent: nrcontent };
-    let updateData = { title, nrcontent, id,}
+    let updateData = { title, nrcontent, id, }
     let data = id ? updateData : newData
     Axios({
       url: url,

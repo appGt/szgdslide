@@ -16,10 +16,18 @@ class AdminLogin extends React.Component {
   }
 
   islogined = () => {
-
     Axios({
       url: '/szgdslide/admin/isLogined',
       method: 'get',
+      data:{front:false},
+      transformRequest: [function (data) {
+        // 将数据转换为表单数据
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
     }).then((res) => {
       if (res.status === 200) {
         if (res.data.success === true && res.data.message === '已经登录') {
@@ -54,6 +62,7 @@ class AdminLogin extends React.Component {
         var params = new URLSearchParams();
         params.append('username', data.username);
         params.append('password', data.password);
+        params.append('front', false)
         Axios({
           method: 'post',
           data: params,
