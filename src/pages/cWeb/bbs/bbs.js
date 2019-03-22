@@ -34,7 +34,7 @@ export default class BBS extends React.Component {
       Axios({
         method: 'get',
         url: '/szgdslide/admin/isLogined',
-        data: { front: true },
+        params: { front: true },
         transformRequest: [function (data) {
           let ret = ''
           for (let it in data) {

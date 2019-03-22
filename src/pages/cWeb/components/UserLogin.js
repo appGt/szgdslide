@@ -1,8 +1,14 @@
 import React from 'react'
 import { Form, Input, Icon, Button, Message, Avatar } from 'antd'
 import Axios from 'axios';
+import { withRouter } from 'react-router-dom'
+
 
 class UserLogin extends React.Component {
+
+  onRigster = () => {
+    this.props.history.push('/register')
+  }
 
   handleSubmit = (e) => {
     e.preventDefault()
@@ -38,7 +44,7 @@ class UserLogin extends React.Component {
     const { getFieldDecorator } = this.props.form
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
-        <Avatar size={50} icon="user" style={{background:"#bfd7f3"}}/>
+        <Avatar size={50} icon="user" style={{ background: "#bfd7f3" }} />
         <Form.Item>
           {getFieldDecorator('username', {
             rules: [{ required: true, message: '输入账号!' }],
@@ -57,11 +63,11 @@ class UserLogin extends React.Component {
           <Button type="primary" block htmlType="submit" className="login-form-button fl">
             登录
           </Button>
-          <a href="/register" className="fr">注册</a>
+          <Button onClick={this.onRigster}>注册</Button>
         </Form.Item>
       </Form>
     )
   }
 }
 
-export default Form.create({})(UserLogin)
+export default withRouter(Form.create({})(UserLogin))

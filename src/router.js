@@ -20,6 +20,7 @@ import WebVideo from './pages/cWeb/video/video'
 import WebShop from './pages/cWeb/shop/shop'
 import WebBBS from './pages/cWeb/bbs/bbs'
 import Detail from './pages/cWeb/detail/detail'
+import Register from './pages/cWeb/register/register'
 
 export default class Router extends React.Component {
   render() {
@@ -28,6 +29,7 @@ export default class Router extends React.Component {
         <App>
           <Switch>
             <Route path="/adminLogin" exact component={AdminLogin}></Route>
+            <Route path="/register" exact component={Register}></Route>
             <Route path="/admin" render={() =>
               <AdminLayout>
                 <Switch>
