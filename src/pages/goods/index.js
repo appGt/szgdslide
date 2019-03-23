@@ -52,7 +52,7 @@ export default class goods extends React.Component {
     })
   }
 
-  handleFilter = (params)=>{
+  handleFilter = (params) => {
     this.params = Object.assign(this.params, params)
     this.requestList()
   }
@@ -85,6 +85,11 @@ export default class goods extends React.Component {
     this.setState({
       editVisiable: true
     })
+  }
+
+  onSuc = () => {
+    this.requestList()
+    this.onCanelEdit()
   }
 
   onCanelEdit = () => {
@@ -174,8 +179,7 @@ export default class goods extends React.Component {
           <img style={{ width: '100%' }} src={this.state.bigImg} />
         </Modal>
         <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
-          {this.state.editVisiable ? <EditGood goodsId={this.state.goodsId} supplierList={this.state.supplierList} onCanelEdit={this.onCanelEdit} /> : ''}
-          {/* <Goods1 /> */}
+          {this.state.editVisiable ? <EditGood goodsId={this.state.goodsId} onSuc={this.onSuc} supplierList={this.state.supplierList} onCanelEdit={this.onCanelEdit} /> : ''}
         </Modal>
       </div>
     );
@@ -186,6 +190,7 @@ const FilterForm = Form.create({})(
   class FilterForm extends React.Component {
     query = () => {
       const params = this.props.form.getFieldsValue()
+      params.name = params.name || ''
       this.props.filterSubmit(params)
     }
 

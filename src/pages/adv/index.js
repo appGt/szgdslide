@@ -1,10 +1,8 @@
 import React from 'react'
-import { Card, Table, message, Modal, Button, Form, Input, Select } from 'antd'
+import { Card, Table, Modal, Button, Form, Input } from 'antd'
 import axios from '../../axios'
 import EditAdv from './editAdv'
-import Axios from 'axios'
 const FormItem = Form.Item
-const Option = Select.Option
 
 export default class Adv extends React.Component {
 
@@ -73,6 +71,11 @@ export default class Adv extends React.Component {
     this.handleCancel()
   }
 
+  onSuc = ()=>{
+    this.requestList()
+    this.handleCancel()
+  }
+
   render() {
     const columns = [
       {
@@ -137,7 +140,7 @@ export default class Adv extends React.Component {
           <img style={{ width: '100%' }} src={this.state.bigImg} />
         </Modal>
         <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
-          {this.state.editVisiable ? <EditAdv adverId={this.state.adverId} onCanelEdit={this.onCanelEdit} handleEditSuc={this.requestList} /> : ''}
+          {this.state.editVisiable ? <EditAdv adverId={this.state.adverId} onCanelEdit={this.onCanelEdit} onSuc={this.onSuc} /> : ''}
         </Modal>
       </div>
     );

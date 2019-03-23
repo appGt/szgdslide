@@ -19,7 +19,7 @@ class AdminLogin extends React.Component {
     Axios({
       url: '/szgdslide/admin/isLogined',
       method: 'get',
-      data:{front:false},
+      params:{front:false},
       transformRequest: [function (data) {
         // 将数据转换为表单数据
         let ret = ''
@@ -30,7 +30,7 @@ class AdminLogin extends React.Component {
       }],
     }).then((res) => {
       if (res.status === 200) {
-        if (res.data.success === true && res.data.message === '已经登录') {
+        if (res.data.success === true) {
           localStorage.setItem('isLogin', true)
           this.props.history.push('/admin')
         }

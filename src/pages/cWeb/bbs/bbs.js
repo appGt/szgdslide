@@ -7,7 +7,6 @@ import UserLogin from './../components/UserLogin'
 import UserInfo from './../components/UserInfo'
 import CommonHeader from './../components/CommonHeader'
 import './bbs.less'
-const { Header } = Layout
 export default class BBS extends React.Component {
   params = {
     pageSize: 10,

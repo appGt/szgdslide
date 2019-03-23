@@ -1,12 +1,12 @@
 import React from 'react'
-import { Input, Form, Message, Select, Upload, Button } from 'antd'
+import { Input, Form, Message, Select, Upload, Button, InputNumber } from 'antd'
 import Axios from 'axios';
 const FormItem = Form.Item
 
 
 class EditGood extends React.Component {
   state = {
-    data: '',
+    data: {},
     loading: false
   }
 
@@ -63,11 +63,19 @@ class EditGood extends React.Component {
     let data = this.props.form.getFieldsValue()
     data.path = this.state.path
     let url = this.state.id ? this.Url.update : this.Url.add
-    if(this.state.id){
+    if (this.state.id) {
       data.id = this.state.id
     }
     if (!data.path) {
       Message.error('请上传商品图片')
+      return
+    }
+    if (!data.stockNum) {
+      Message.error('请输入库存')
+      return
+    }
+    if (!data.price) {
+      Message.error('请输入价格')
       return
     }
     Axios({
@@ -82,13 +90,14 @@ class EditGood extends React.Component {
         }
         return ret
       }],
-    }).then((res)=>{
-      if(res.status === 200){
-        if(res.data.success){
+    }).then((res) => {
+      if (res.status === 200) {
+        if (res.data.success) {
           Message.success('更新成功')
+          this.props.onSuc()
         }
       }
-    }).catch(()=>{
+    }).catch(() => {
       Message.error('更新失败')
     })
   }
@@ -112,9 +121,9 @@ class EditGood extends React.Component {
             )
           }
         </FormItem>
-        <FormItem label="库存" key="stock">
+        <FormItem label="库存" key="stockNum">
           {
-            getFieldDecorator('stock', {
+            getFieldDecorator('stockNum', {
               rules: [
                 {
                   required: true,
@@ -123,7 +132,27 @@ class EditGood extends React.Component {
               ],
               initialValue: this.state.stockNum
             })(
-              <Input placeholder="库存" />
+              <InputNumber
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
+            )
+          }
+        </FormItem>
+        <FormItem label="价格" key="price">
+          {
+            getFieldDecorator('price', {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入价格'
+                }
+              ],
+              initialValue: this.state.price
+            })(
+              <InputNumber
+                formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
             )
           }
         </FormItem>

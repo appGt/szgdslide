@@ -1,33 +1,32 @@
 import React from 'react'
 import { Input, Form, Message, Upload, Button } from 'antd'
 import Axios from 'axios';
-import TextArea from 'antd/lib/input/TextArea';
 const FormItem = Form.Item
 
 
-class EditAdv extends React.Component {
+class EditVideo extends React.Component {
   state = {
     data: '',
     loading: false
   }
   Url = {
-    add: '/szgdslide/admin/addAdver',
-    update: '/szgdslide/admin/updateAdver'
+    add: '/szgdslide/admin/addVideo',
+    update: '/szgdslide/admin/updateVideo'
   }
 
   componentWillMount() {
-    let adverId = this.props.adverId
-    if (adverId) {
-      this.setState({ id: adverId })
-      this.getAdv(adverId)
+    let videoId = this.props.videoId
+    if (videoId) {
+      this.setState({ id: videoId })
+      this.getVideo(videoId)
     }
   }
 
-  getAdv = (adverId) => {
+  getVideo = (videoId) => {
     Axios({
       method: 'post',
-      url: '/szgdslide/admin/detailAdver',
-      data: { id: adverId },
+      url: '/szgdslide/admin/detailVideo',
+      data: { id: videoId },
       transformRequest: [function (data) {
         // 将数据转换为表单数据
         let ret = ''
@@ -75,7 +74,7 @@ class EditAdv extends React.Component {
       data.id = this.state.id
     }
     if (!data.path) {
-      Message.error('请上传广告图片')
+      Message.error('请上传视频')
       return
     }
     if(this.state.id){
@@ -97,7 +96,7 @@ class EditAdv extends React.Component {
       if(res.status === 200){
         if(res.data.success === true){
           Message.success('更新成功')
-          this.props.onSuc()
+          this.props.handleEditSuc()
         }
       }
     }).catch(()=>{
@@ -124,40 +123,18 @@ class EditAdv extends React.Component {
             )
           }
         </FormItem>
-        <FormItem label="描述" key="nrcontent">
-          {
-            getFieldDecorator('nrcontent', {
-              rules: [
-                {
-                  required: true,
-                  message: '描述',
-                }
-              ],
-              initialValue: this.state.nrcontent
-            })(
-              <TextArea placeholder="描述" col="30"/>
-            )
-          }
-        </FormItem>
         <Upload
-          accept="image"
           name="files"
           action='/szgdslide/upload'
-          showUploadList={false}
           onChange={
             this.onUpload
           }
         >
           <Button type="primary" icon={this.state.loading ? 'loading' : 'upload'} loading={this.state.loading}>
-            上传图片
+            上传视频
         </Button>
         </Upload>
-        <div style={{ marginTop: 10, marginBottom: 10, width: 'auto'}} >
-          <img style={{ width: '100%' }} src={
-            this.state.path || 'http://dummyimage.com/715x414'
-          } alt="广告" />
-        </div>
-        <FormItem>
+        <FormItem style={{marginTop: 20}}>
           <Button onClick={this.Submit} type="primary" style={{ marginRight: 10 }}>提交</Button>
         </FormItem>
       </Form >
@@ -165,4 +142,4 @@ class EditAdv extends React.Component {
   }
 }
 
-export default Form.create({})(EditAdv)
+export default Form.create({})(EditVideo)
