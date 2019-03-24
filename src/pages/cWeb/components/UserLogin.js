@@ -63,7 +63,7 @@ class UserLogin extends React.Component {
           <Button type="primary" block htmlType="submit" className="login-form-button fl">
             登录
           </Button>
-          <Button onClick={this.onRigster}>注册</Button>
+          <Button block onClick={this.onRigster}>注册</Button>
         </Form.Item>
       </Form>
     )

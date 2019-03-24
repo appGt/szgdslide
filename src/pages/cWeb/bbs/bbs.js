@@ -1,6 +1,6 @@
 import React from 'react'
-import { Avatar, Drawer, Input, Form, Button, Message, Affix, Layout } from 'antd'
-import { NavLink } from 'react-router-dom'
+import { Avatar, Drawer, Input, Form, Button, Message, Affix, Layout, Upload, Modal } from 'antd'
+import BBSDetail from './bbsDetail'
 import Axios from 'axios';
 import Utils from './../../../utils/utils'
 import UserLogin from './../components/UserLogin'
@@ -17,9 +17,11 @@ export default class BBS extends React.Component {
   state = {
     sendList: [],
     visible: false,
+    bbsVisible: false,
     loginVisable: false,
     userData: {},
     isLogin: false,
+    sendId: ''
   }
   componentWillMount() {
     this.isLogined()
@@ -155,7 +157,21 @@ export default class BBS extends React.Component {
       data.avatar = data.name.split('')[0]
       data.color = this.colorList[i]
       data.id = Item.id
-      return <Send {...data} key={i} />
+      return <Send {...data} key={i} onDetail={this.onDetail} />
+    })
+  }
+
+  onDetail = (sendId) => {
+    this.setState({
+      bbsVisible: true,
+      sendId: sendId
+    })
+  }
+
+  onDetailClose = () => {
+    this.setState({
+      bbsVisible: false,
+      sendId: ''
     })
   }
 
@@ -181,11 +197,22 @@ export default class BBS extends React.Component {
             closable={false}
             onClose={this.onClose}
             visible={this.state.visible}
-            height="400"
+            height="500"
           >
             <BottomForm onSubmit={this.SubmitSend} />
           </Drawer>
         </div>
+        <Modal
+          visible={this.state.bbsVisible}
+          onCancel={this.onDetailClose}
+          footer={false}
+          width={800}
+          height="100%"
+        >
+          {
+            this.state.bbsVisible ? <BBSDetail sendId={this.state.sendId} /> : ''
+          }
+        </Modal>
       </Layout>
     )
   }
@@ -193,9 +220,11 @@ export default class BBS extends React.Component {
 
 const BottomForm = Form.create({})(
   class Content extends React.Component {
+    state = { path: '', loading: false }
     onSubmit = () => {
       this.props.form.validateFields((err, values) => {
         if (!err) {
+          values.path = this.state.path
           this.props.onSubmit(values).then((res) => {
             this.props.form.setFieldsValue({
               title: '',
@@ -205,11 +234,31 @@ const BottomForm = Form.create({})(
         }
       })
     }
+    onUpload = (info) => {
+      if (info.file.status !== 'uploading') {
+        this.setState({
+          loading: true
+        })
+      }
+      if (info.file.status === 'done' && info.file.response.success === true) {
+        Message.success(`${info.file.name} 上传成功`);
+        this.setState({
+          path: '/szgdslide/files/' + info.file.name,
+          loading: false
+        })
+      } else if (info.file.status === 'error') {
+        Message.error(`${info.file.name} 上传失败.`);
+        this.setState({
+          path: '',
+          loading: false
+        })
+      }
+    }
     render() {
       const { getFieldDecorator } = this.props.form
       return (
         <Form>
-          <Form.Item className="Item" label="title">
+          <Form.Item className="Item" label="标题">
             {
               getFieldDecorator('title', {
                 rules: [
@@ -223,6 +272,18 @@ const BottomForm = Form.create({})(
               )
             }
           </Form.Item>
+          <Upload
+            name="files"
+            action='/szgdslide/upload'
+            showUploadList={false}
+            onChange={
+              this.onUpload
+            }
+          >
+            <Button type="primary" icon={this.state.loading ? 'loading' : 'upload'} loading={this.state.loading}>
+              上传视频
+        </Button>
+          </Upload>
           <Form.Item className="Item" label="描述">
             {
               getFieldDecorator('content', {
@@ -249,9 +310,26 @@ const BottomForm = Form.create({})(
 function Send(props) {
   return (
     <li className="send-item" >
-      <Avatar size={50} className="avatar" style={{ backgroundColor: props.color }}>{props.avatar}</Avatar>
+      <Avatar
+        size={50}
+        className="avatar"
+        style={{ backgroundColor: props.color }}
+      >
+        {props.avatar}
+      </Avatar>
       <div className="txt">
-        <h3 className="title"><NavLink to={"/bbs/" + props.id}>{props.title}</NavLink></h3>
+        <h3
+          className="title"
+          style={{
+            cursor: 'pointer',
+            color: '#1890ff'
+          }}
+          onClick={
+            (e) => props.onDetail(props.id, e)
+          }
+        >
+          {props.title}
+        </h3>
         <p><span className="time">{props.time}</span>  {props.name}</p>
       </div>
       <div className="num">
