@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Layout, InputNumber, Message } from 'antd'
-import { withRouter } from 'react-router-dom'
+import { Button, Layout, InputNumber, Message, Modal, Table } from 'antd'
+import { withRouter, NavLink } from 'react-router-dom'
 import CommonHeader from './../components/CommonHeader'
 import UserLogin from './../components/UserLogin'
 import UserInfo from './../components/UserInfo'
@@ -11,7 +11,9 @@ class GoodsDetail extends React.Component {
   state = {
     num: 1,
     goods: { supplier: {} },
-    isLogin: false
+    isLogin: false,
+    visible: false,
+    orderList: [],
   }
   componentWillMount() {
     let id = this.props.match.params.id
@@ -23,12 +25,14 @@ class GoodsDetail extends React.Component {
   }
 
   onBuy = () => {
-    if(!this.state.isLogin){
+    if (!this.state.isLogin) {
       Message.error('请先登录')
       return
     }
-    let { goods, num } = this.state
-    localStorage.setItem('goodsList', { goods, num })
+    let data = {}
+    data.goods = this.state.goods
+    data.num = this.state.num
+    localStorage.setItem('goodsList', JSON.stringify(data))
     this.props.history.push('/order/confirmOrder')
   }
 
@@ -85,6 +89,7 @@ class GoodsDetail extends React.Component {
             isLogin: isLogin === 'true',
             userData: res.data.data
           })
+          localStorage.setItem('userData', JSON.stringify(res.data.data))
         }
       }).catch((err) => {
         console.log(err)
@@ -103,9 +108,43 @@ class GoodsDetail extends React.Component {
           userData: {}
         })
         localStorage.removeItem('userLogin')
+        localStorage.removeItem('userData')
       }
     }).catch((err) => {
       console.log(err)
+    })
+  }
+
+  showOrder = () => {
+    let _this = this
+    Axios({
+      url: '/szgdslide/admin/ordersForUser',
+      method: 'post',
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        let list = res.data.data
+        list = list.map((item, i) => {
+          return {
+            key: item.id,
+            id: item.id,
+            good: item.good,
+            num: item.num,
+            money: item.money,
+            state: item.state
+          }
+        })
+        _this.setState({
+          visible: true,
+          orderList: list
+        })
+      }
+    })
+
+  }
+
+  onClose = () => {
+    this.setState({
+      visible: false
     })
   }
 
@@ -160,13 +199,80 @@ class GoodsDetail extends React.Component {
           </div>
           <div className="person-info">
             {
-              this.state.isLogin ? <UserInfo shop={true} userData={this.state.userData} logout={this.logout} /> : <UserLogin handleLogin={this.handleLogin} />
+              this.state.isLogin ? <UserInfo shop={true} userData={this.state.userData} logout={this.logout} showOrder={this.showOrder} /> : <UserLogin handleLogin={this.handleLogin} />
             }
           </div>
         </div>
+        <Modal visible={this.state.visible} onCancel={this.onClose} width={800} footer={false}>
+          <ListOrder dataSource={this.state.orderList} />
+        </Modal>
       </Layout>
     )
   }
+}
+
+function ListOrder(props) {
+  const dataSource = props.dataSource
+  const getOrderState = (type) => {
+    switch (type) {
+      case 0:
+        return <span style={{ color: 'red', fontSize: 20 }}>未付款</span>
+      case 1:
+        return <span style={{ color: '#37b753', fontSize: 20 }}>已付款</span>
+      case 2:
+        return <span style={{ color: '#37b753', fontSize: 20 }}>已完成</span>
+      case 3:
+        return <span style={{ color: '#ccc', fontSize: 20 }}>商品已下架</span>
+    }
+  }
+  const columns = [
+    {
+      title: '编号',
+      key: 'id',
+      dataIndex: 'id'
+    },
+    {
+      title: '商品',
+      key: 'good',
+      dataIndex: 'good',
+      render: (txt, item) => {
+        return <span>
+          <img src={txt.path} alt="good" style={{ width: 40, marginRight: 20 }} />
+          {
+            txt.name
+          }
+        </span>
+      }
+    },
+    {
+      title: '数量',
+      key: 'num',
+      dataIndex: 'num'
+    },
+    {
+      title: '金额',
+      key: 'money',
+      dataIndex: 'money'
+    },
+    {
+      title: '状态',
+      key: 'state',
+      dataIndex: 'state',
+      render: (txt, type) => {
+        return getOrderState(type.state)
+      }
+    },
+    {
+      title: '操作',
+      key: 'handle',
+      render: (x, item) => {
+        return <NavLink to={"/order/orderDetail/" + item.id}>查看</NavLink>
+      }
+    }
+  ]
+  return (
+    <Table dataSource={dataSource} columns={columns} />
+  )
 }
 
 export default withRouter(GoodsDetail)

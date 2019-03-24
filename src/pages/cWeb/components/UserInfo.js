@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Row, Col, Button } from 'antd'
 export default function UserInfo(props) {
-  const { answerNum, reviewNum, sendNum, user } = props.userData
+  const { answerNum, reviewNum, sendNum, user,orderNum } = props.userData
   return (
     <div className="user-info">
       <Avatar size={64} style={{ backgroundColor: '#1890ff' }}>{user.userdesc.charAt(0)}</Avatar>
@@ -9,9 +9,9 @@ export default function UserInfo(props) {
       {
         props.shop ? (<Row style={{ marginBottom: 20 }}>
           <Col span={12} className="user-more-right" style={{ padding: 10, height: 80, borderRight: '1px solid #ccc'  }}>
-          <span>99</span>
+          <span>{orderNum}</span>
             <br />
-            <span>我的订单</span>
+            <span onClick={props.showOrder} style={{cursor:'pointer',color:'#1890ff'}}>我的订单</span>
           </Col>
         </Row>) : (<Row className="user-info-more" style={{ marginBottom: 20 }}>
           <Col span={8} className="user-more-left" style={{ padding: 20, height: 100, borderRight: '1px solid #ccc' }}>

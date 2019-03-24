@@ -20,6 +20,7 @@ import WebVideo from './pages/cWeb/video/video'
 import WebShop from './pages/cWeb/shop/shop'
 import GoodsDetail from './pages/cWeb/shop/goodsDetail'
 import ConfirmOrder from './pages/cWeb/shop/confirmOrder'
+import OrderDetail from './pages/cWeb/shop/orderDetail'
 import WebBBS from './pages/cWeb/bbs/bbs'
 import Detail from './pages/cWeb/detail/detail'
 import Register from './pages/cWeb/register/register'
@@ -58,6 +59,7 @@ export default class Router extends React.Component {
                 <Route path="/video" exact component={WebVideo} />
                 <Route path="/shop/:id" exact component={GoodsDetail} />
                 <Route path="/order/confirmOrder" exact component={ConfirmOrder} />
+                <Route path="/order/orderDetail/:id" exact component={OrderDetail} />
                 <Route path="/shop" exact component={WebShop} />
                 <Route path="/bbs" exact component={WebBBS} />
                 <Route path="/bbs/:id" exact component={WebBBS} />
