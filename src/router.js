@@ -22,6 +22,7 @@ import GoodsDetail from './pages/cWeb/shop/goodsDetail'
 import ConfirmOrder from './pages/cWeb/shop/confirmOrder'
 import OrderDetail from './pages/cWeb/shop/orderDetail'
 import WebBBS from './pages/cWeb/bbs/bbs'
+import BBSDetail from './pages/cWeb/bbs/bbsDetail'
 import Detail from './pages/cWeb/detail/detail'
 import Register from './pages/cWeb/register/register'
 
@@ -62,7 +63,7 @@ export default class Router extends React.Component {
                 <Route path="/order/orderDetail/:id" exact component={OrderDetail} />
                 <Route path="/shop" exact component={WebShop} />
                 <Route path="/bbs" exact component={WebBBS} />
-                <Route path="/bbs/:id" exact component={WebBBS} />
+                <Route path="/bbs/:id" exact component={BBSDetail} />
                 <Route path="/:type/:id" exact component={Detail} />
               </Switch>
 

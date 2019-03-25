@@ -42,12 +42,10 @@ export default class User extends React.Component {
       {
         title: '编号',
         dataIndex: 'id',
-        width: 80,
       },
       {
         title: '用户名',
         dataIndex: 'username',
-        width: 200,
       },
       {
         title: '描述',
@@ -56,7 +54,6 @@ export default class User extends React.Component {
       {
         title: '性别',
         dataIndex: 'sex',
-        width: 100,
         key: 'sex',
         render: (text, record) => {
           return text === '男' ? '男' : '女'
@@ -65,7 +62,6 @@ export default class User extends React.Component {
       {
         title: '创建时间',
         dataIndex: 'createTime',
-        width: 100,
         key: 'createTime',
         render: (text, record) => {
           return Utils.formateDate(text)
@@ -74,19 +70,12 @@ export default class User extends React.Component {
       {
         title: '角色',
         dataIndex: 'roleId',
-        width: 100,
         key: 'roleId',
         render: (roleId, record) => {
           return roleId === 1 ? '管理员' : '普通用户'
         }
       },
     ]
-
-    const rowSelection = {
-      type: 'checkbox',
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: this.onSelectChange,
-    }
 
     return (
       <div className="full-height">
@@ -99,8 +88,7 @@ export default class User extends React.Component {
             columns={columns}
             dataSource={this.state.list}
             pagination={this.state.pagination}
-            rowSelection={rowSelection}
-            scroll={{ y: 800 }}
+            // scroll={{ y: 800 }}
           />
         </div>
       </div>

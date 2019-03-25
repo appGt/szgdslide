@@ -1,5 +1,6 @@
 import React from 'react'
 import { Avatar, Drawer, Input, Form, Button, Message, Affix, Layout, Upload, Modal } from 'antd'
+import { NavLink } from 'react-router-dom'
 import BBSDetail from './bbsDetail'
 import Axios from 'axios';
 import Utils from './../../../utils/utils'
@@ -207,7 +208,6 @@ export default class BBS extends React.Component {
           onCancel={this.onDetailClose}
           footer={false}
           width={800}
-          height="100%"
         >
           {
             this.state.bbsVisible ? <BBSDetail sendId={this.state.sendId} /> : ''
@@ -318,18 +318,17 @@ function Send(props) {
         {props.avatar}
       </Avatar>
       <div className="txt">
-        <h3
-          className="title"
-          style={{
-            cursor: 'pointer',
-            color: '#1890ff'
-          }}
-          onClick={
-            (e) => props.onDetail(props.id, e)
-          }
-        >
-          {props.title}
-        </h3>
+        <NavLink to={'/bbs/' + props.id} target="_blank">
+          <h3
+            className="title"
+            style={{
+              cursor: 'pointer',
+              color: '#1890ff'
+            }}
+          >
+            {props.title}
+          </h3>
+        </NavLink>
         <p><span className="time">{props.time}</span>  {props.name}</p>
       </div>
       <div className="num">

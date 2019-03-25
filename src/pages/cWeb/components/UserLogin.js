@@ -43,7 +43,7 @@ class UserLogin extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
+      <Form onSubmit={this.handleSubmit} className="login-form" style={{ border: '1px solid #a7c8efba',padding:20  }}>
         <Avatar size={50} icon="user" style={{ background: "#bfd7f3" }} />
         <Form.Item>
           {getFieldDecorator('username', {
