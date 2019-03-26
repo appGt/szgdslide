@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Table, message, Modal, Button, Form, Input, Select } from 'antd'
+import { Card, Table, Message, Modal, Button, Form, Input, Select } from 'antd'
 import axios from '../../axios'
 import EditGood from './editGood'
 import Axios from 'axios'
@@ -48,7 +48,7 @@ export default class goods extends React.Component {
       }
       console.log(res)
     }).catch(() => {
-      message.error('获取供应商信息失败')
+      Message.error('获取供应商信息失败')
     })
   }
 
@@ -87,12 +87,14 @@ export default class goods extends React.Component {
     })
   }
 
-  onSuc = () => {
-    this.requestList()
-    this.onCanelEdit()
+  newSupplier = () => {
+    this.setState({
+      supplierVisible: true
+    })
   }
 
-  onCanelEdit = () => {
+  onSuc = () => {
+    this.requestList()
     this.handleCancel()
   }
 
@@ -161,6 +163,7 @@ export default class goods extends React.Component {
       <div className="full-height">
         <Card>
           <Button type="primary" onClick={this.newGood}>添加新商品</Button>
+          <Button type="primary" onClick={this.newSupplier}>添加供应商</Button>
         </Card>
         <Card style={{ marginTop: 10 }}>
           <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
@@ -179,7 +182,10 @@ export default class goods extends React.Component {
           <img style={{ width: '100%' }} src={this.state.bigImg} />
         </Modal>
         <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
-          {this.state.editVisiable ? <EditGood goodsId={this.state.goodsId} onSuc={this.onSuc} supplierList={this.state.supplierList} onCanelEdit={this.onCanelEdit} /> : ''}
+          {this.state.editVisiable ? <EditGood goodsId={this.state.goodsId} onSuc={this.onSuc} supplierList={this.state.supplierList} onCanelEdit={this.handleCancel} /> : ''}
+        </Modal>
+        <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
+          <SupplierForm onSuc={this.handleCancel} />
         </Modal>
       </div>
     );
@@ -230,6 +236,87 @@ const FilterForm = Form.create({})(
             <Button onClick={this.reset} type="danger">删除</Button>
           </FormItem>
         </Form>
+      )
+    }
+  }
+)
+
+const SupplierForm = Form.create({})(
+  class supplierForm extends React.Component {
+    onSubmit = () => {
+      this.props.form.validateFields((err, value) => {
+        if (!err) {
+          Axios({
+            method: 'post',
+            url: '/szgdslide/admin/addSupplier',
+            data: value,
+            transformRequest: [function (data) {
+              // 将数据转换为表单数据
+              let ret = ''
+              for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+              }
+              return ret
+            }],
+          }).then((res) => {
+            if (res.status === 200 && res.data.success) {
+              Message.success('提交成功')
+              this.props.form.setFieldsValue({ name: '', address: '', phone: '' })
+              this.props.onSuc()
+            }
+          }).catch(()=>{Message.error('提交失败')})
+        }
+      })
+    }
+    render() {
+      const { getFieldDecorator } = this.props.form
+      return (
+        <div>
+          <Form onSubmit={this.onSubmit}>
+            <FormItem label="供应商名称">
+              {
+                getFieldDecorator('name', {
+                  rules: [{
+                    required: true,
+                    message: '输入供应商名称'
+                  }]
+                })(
+                  <Input placeholder="供应商名称" />
+                )
+              }
+            </FormItem>
+            <FormItem label="供应商地址">
+              {
+                getFieldDecorator('address', {
+                  rules: [{
+                    required: true,
+                    message: '输入供应商地址'
+                  }]
+                })(
+                  <Input placeholder="供应商地址" />
+                )
+              }
+            </FormItem>
+            <FormItem label="联系号码">
+              {
+                getFieldDecorator('phone', {
+                  rules: [{
+                    required: true,
+                    message: '请输入联系号码'
+                  }, {
+                    pattern: /^1[3458]\d{9}$/,
+                    message: '请输入正确手机号'
+                  }]
+                })(
+                  <Input placeholder="联系号码" />
+                )
+              }
+            </FormItem>
+            <FormItem>
+              <Inupt type="submit">提交</Inupt>
+            </FormItem>
+          </Form>
+        </div>
       )
     }
   }

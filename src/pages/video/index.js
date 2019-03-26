@@ -54,7 +54,7 @@ export default class Video extends React.Component {
   playVideo = (record, e) => {
     this.setState({
       videoVisible: true,
-      videoId: record.id
+      videoPath: record.path
     })
   }
 
@@ -118,7 +118,7 @@ export default class Video extends React.Component {
           />
         </div>
         <Modal visible={this.state.videoVisible} footer={null} onCancel={this.handleCancel}>
-          <video style={{ width: '100%' }} src={this.state.videoPath} />
+          <video style={{ width: '100%' }} src={this.state.videoPath} controls />
         </Modal>
         <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
           {this.state.editVisiable ? <EditVideo videoId={this.state.videoId} onCanelEdit={this.onCanelEdit} onSuc={this.onSuc} /> : ''}

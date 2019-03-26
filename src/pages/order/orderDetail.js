@@ -14,10 +14,7 @@ export default class OrderDetail extends React.Component {
     id: ''
   }
   componentWillMount() {
-    let id = this.props.match.params.id
-    if (!id) {
-      window.history.go(-1)
-    }
+    let id = this.props.id
     this.setState({
       id
     })
@@ -56,15 +53,15 @@ export default class OrderDetail extends React.Component {
         })
       }
     }).catch(() => {
-      Message.error('提交失败')
+      Message.error('获取数据失败')
     })
   }
 
-  onPay = () => {
+  onFinish = () => {
     Axios({
       method: 'post',
       url: '/szgdslide/admin/updateOrder',
-      data: { id: this.state.id, state: 1 },
+      data: { id: this.state.id, state: 2 },
       transformRequest: [function (data) {
         let ret = ''
         for (let it in data) {
@@ -84,7 +81,7 @@ export default class OrderDetail extends React.Component {
     Axios({
       method: 'post',
       url: '/szgdslide/admin/deteleOrder',
-      data: { ids: this.state.id},
+      data: { ids: this.state.id },
       transformRequest: [function (data) {
         let ret = ''
         for (let it in data) {
@@ -150,9 +147,22 @@ export default class OrderDetail extends React.Component {
             </Row>
           </div>
           {
-            order.state === 0 ? (<div><Button type="primary" onClick={this.onPay} style={{ marginRight: 50 }}>付款</Button> <Button type="danger" onClick={this.onDelete}>取消订单</Button></div>) : ''}
+            order.state === 0 ? (<div><Button type="primary" onClick={this.onFinish} style={{ marginRight: 50 }}>已完成</Button></div>) : ''}
         </div>
       </Layout>
     )
+  }
+}
+
+const getOrderState = (type) => {
+  switch (type) {
+    case 0:
+      return <span style={{ color: 'red', fontSize: 20 }}>未付款</span>
+    case 1:
+      return <span style={{ color: '#37b753', fontSize: 20 }}>已付款</span>
+    case 2:
+      return <span style={{ color: '#37b753', fontSize: 20 }}>已完成</span>
+    case 3:
+      return <span style={{ color: '#ccc', fontSize: 20 }}>商品已下架</span>
   }
 }

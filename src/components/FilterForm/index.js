@@ -98,7 +98,7 @@ class FilterForm extends React.Component {
         <FormItem>
           <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
           <Button onClick={this.reset} type="default" style={{ marginRight: 10 }}>重置</Button>
-          <Button onClick={this.reset} type="danger">删除</Button>
+          <Button onClick={this.delete} type="danger">删除</Button>
         </FormItem>
       </Form>
     )

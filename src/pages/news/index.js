@@ -60,8 +60,23 @@ class News extends React.Component {
     console.log(ids)
     Axios({
       method: 'post',
-      url: ''
-    })
+      url: '/szgdslide/admin/deleteNews',
+      data: { ids },
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        message.success('删除成功')
+        this.requestList()
+      } else {
+        message.success('删除失败')
+      }
+    }).catch(() => { message.success('删除失败') })
   }
 
   handleDetail = (record, e) => {

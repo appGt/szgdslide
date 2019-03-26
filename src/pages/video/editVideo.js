@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Message, Upload, Button } from 'antd'
+import { Input, Form, Message, Upload, Button, Icon } from 'antd'
 import Axios from 'axios';
 const FormItem = Form.Item
 
@@ -7,7 +7,9 @@ const FormItem = Form.Item
 class EditVideo extends React.Component {
   state = {
     data: '',
-    loading: false
+    loading: false,
+    imageUrl: '',
+    imgLoading: false,
   }
   Url = {
     add: '/szgdslide/admin/addVideo',
@@ -66,18 +68,44 @@ class EditVideo extends React.Component {
     }
   }
 
+  onImgUpload = (info) => {
+    if (info.file.status !== 'uploading') {
+      this.setState({
+        loading: true
+      })
+    }
+    if (info.file.status === 'done' && info.file.response.success === true) {
+      Message.success(`${info.file.name} 上传成功`);
+      this.setState({
+        imgPath: '/szgdslide/files/' + info.file.name,
+        imgLoading: false
+      })
+    } else if (info.file.status === 'error') {
+      Message.error(`${info.file.name} 上传失败.`);
+      this.setState({
+        imgPath: '',
+        imgLoading: false
+      })
+    }
+  }
+
   Submit = () => {
     let data = this.props.form.getFieldsValue()
     data.path = this.state.path
+    data.imageUrl = this.state.imageUrl
     let url = this.state.id ? this.Url.update : this.Url.add
-    if(this.state.id){
+    if (this.state.id) {
       data.id = this.state.id
     }
     if (!data.path) {
       Message.error('请上传视频')
       return
     }
-    if(this.state.id){
+    if (!data.imageUrl) {
+      Message.error('请上传视频图片')
+      return
+    }
+    if (this.state.id) {
       data.id = this.state.id
     }
     Axios({
@@ -92,20 +120,27 @@ class EditVideo extends React.Component {
         }
         return ret
       }],
-    }).then((res)=>{
-      if(res.status === 200){
-        if(res.data.success === true){
+    }).then((res) => {
+      if (res.status === 200) {
+        if (res.data.success === true) {
           Message.success('更新成功')
-          this.props.handleEditSuc()
+          this.props.onSuc()
         }
       }
-    }).catch(()=>{
+    }).catch(() => {
       Message.error('更新失败')
     })
   }
 
   render() {
     const { getFieldDecorator } = this.props.form
+    const { imageUrl, imgLoading } = this.state
+    const uploadButton = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
     return (
       <Form layout="vertical">
         <FormItem label="标题" key="title">
@@ -125,21 +160,49 @@ class EditVideo extends React.Component {
         </FormItem>
         <Upload
           name="files"
+          showUploadList={false}
+          action="/szgdslide/upload"
+          beforeUpload={beforeUpload}
+          onChange={this.handleChange}
+        >
+          <Button type="primary" icon={imgLoading ? 'loading' : 'upload'} loading={imgLoading}>
+            上传封面图片
+        </Button>
+        </Upload>
+        <div style={{ marginTop: 10, marginBottom: 10, width: 200, height: 200 }} >
+          <img style={{ width: 200, height: 200 }} src={
+            imageUrl || 'http://dummyimage.com/200x200'
+          } alt="视频" />
+        </div>
+        <Upload
+          name="files"
           action='/szgdslide/upload'
           onChange={
             this.onUpload
           }
         >
-          <Button type="primary" icon={this.state.loading ? 'loading' : 'upload'} loading={this.state.loading}>
+          <Button type="primary" icon={this.state.imgLoading ? 'loading' : 'upload'} loading={this.state.imgLoading}>
             上传视频
         </Button>
         </Upload>
-        <FormItem style={{marginTop: 20}}>
+        <FormItem style={{ marginTop: 20 }}>
           <Button onClick={this.Submit} type="primary" style={{ marginRight: 10 }}>提交</Button>
         </FormItem>
       </Form >
     )
   }
+}
+
+function beforeUpload(file) {
+  const isJPG = file.type === 'image/jpeg';
+  if (!isJPG) {
+    message.error('请上传jpg格式图片');
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('图片大小不能超过 2MB!');
+  }
+  return isJPG && isLt2M;
 }
 
 export default Form.create({})(EditVideo)

@@ -178,9 +178,7 @@ class EditGood extends React.Component {
           name="files"
           action='/szgdslide/upload'
           showUploadList={false}
-          onChange={
-            this.onUpload
-          }
+          onChange={this.onUpload}
         >
           <Button type="primary" icon={this.state.loading ? 'loading' : 'upload'} loading={this.state.loading}>
             上传图片

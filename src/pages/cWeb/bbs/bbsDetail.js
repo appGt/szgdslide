@@ -228,7 +228,7 @@ export default class BBSDetail extends React.Component {
             key={i}
           >
             {
-              (item.answers && item.answers.length) ? renderAnswer(item.answers, item.id,this.Reply) : ''
+              (item.answers && item.answers.length) ? renderAnswer(item.answers, item.id, this.Reply) : ''
             }
           </Comment>
         )
@@ -262,7 +262,7 @@ export default class BBSDetail extends React.Component {
                       <div>
                         <p>{sendData.content}</p>
                         {
-                          sendData.path ? <video src={sendData.path} style={{ width: '100%' }} /> : ''
+                          sendData.path ? <video src={sendData.path} style={{ width: '100%' }} controls /> : ''
                         }
                       </div>
                     }
@@ -307,7 +307,7 @@ export default class BBSDetail extends React.Component {
           visible={this.state.replyVisible}
           onCancel={this.onReplyClose}
           onOk={this.onReplySubmit}
-          title={'回复@ '+this.state.tos.userdesc + ':' + this.state.toContent}
+          title={'回复@ ' + this.state.tos.userdesc + ':' + this.state.toContent}
         >
           <TextArea onChange={this.onReplyChange} value={this.state.replyContent} rows={4} />
         </Modal>
@@ -317,14 +317,14 @@ export default class BBSDetail extends React.Component {
   }
 }
 
-function renderAnswer(list, reviewId,Reply) {
+function renderAnswer(list, reviewId, Reply) {
   return (
     <div>
       {
         list.map((item, i) => {
           let { fromUser, toUser } = item
           return <Comment
-            actions={[<span style={{ color: '#1890ff' }} onClick={(e) =>Reply({ 'reviewId': reviewId, 'tos': fromUser, 'toContent': item.content }, e)}>回复</span>]}
+            actions={[<span style={{ color: '#1890ff' }} onClick={(e) => Reply({ 'reviewId': reviewId, 'tos': fromUser, 'toContent': item.content }, e)}>回复</span>]}
             author={<span>{fromUser.userdesc}</span>}
             avatar={(
               <Avatar
