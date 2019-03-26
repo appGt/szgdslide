@@ -23,6 +23,7 @@ export default class goods extends React.Component {
 
   componentWillMount() {
     this.requestList()
+    this.requestSupplierList()
   }
 
   requestList = () => {
@@ -31,6 +32,9 @@ export default class goods extends React.Component {
       params: _this.params,
       isShowLoading: true
     })
+  }
+
+  requestSupplierList = () => {
     Axios({
       url: '/szgdslide/admin/listSuppliers',
       data: { pageNo: 1, pageSize: 50 },
@@ -70,7 +74,7 @@ export default class goods extends React.Component {
     })
   }
   //取消预览
-  handleCancel = () => this.setState({ imgVisible: false, editVisiable: false, goodsId: '' })
+  handleCancel = () => this.setState({ imgVisible: false, editVisiable: false, goodsId: '', supplierVisible: false })
 
   //编辑商品
   handleDetail = (record) => {
@@ -93,8 +97,13 @@ export default class goods extends React.Component {
     })
   }
 
-  onSuc = () => {
+  onSuc=()=>{
     this.requestList()
+    this.handleCancel()
+  }
+
+  onSupplierSuc = () => {
+    this.requestSupplierList()
     this.handleCancel()
   }
 
@@ -163,7 +172,7 @@ export default class goods extends React.Component {
       <div className="full-height">
         <Card>
           <Button type="primary" onClick={this.newGood}>添加新商品</Button>
-          <Button type="primary" onClick={this.newSupplier}>添加供应商</Button>
+          <Button type="primary" onClick={this.newSupplier} style={{ marginLeft: 20 }}>添加供应商</Button>
         </Card>
         <Card style={{ marginTop: 10 }}>
           <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
@@ -184,8 +193,8 @@ export default class goods extends React.Component {
         <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
           {this.state.editVisiable ? <EditGood goodsId={this.state.goodsId} onSuc={this.onSuc} supplierList={this.state.supplierList} onCanelEdit={this.handleCancel} /> : ''}
         </Modal>
-        <Modal visible={this.state.editVisiable} footer={null} onCancel={this.handleCancel}>
-          <SupplierForm onSuc={this.handleCancel} />
+        <Modal visible={this.state.supplierVisible} footer={null} onCancel={this.handleCancel}>
+          <SupplierForm onSuc={this.onSupplierSuc} />
         </Modal>
       </div>
     );
@@ -197,6 +206,7 @@ const FilterForm = Form.create({})(
     query = () => {
       const params = this.props.form.getFieldsValue()
       params.name = params.name || ''
+      params.supplierId = params.supplierId || ''
       this.props.filterSubmit(params)
     }
 
@@ -219,9 +229,9 @@ const FilterForm = Form.create({})(
               )
             }
           </FormItem>
-          <FormItem label="供应商" key="supplier">
+          <FormItem label="供应商" key="supplierId">
             {
-              getFieldDecorator('supplier')(
+              getFieldDecorator('supplierId')(
                 <Select placeholder="供应商" style={{ width: 150 }} >
                   {
                     this.props.supplierList
@@ -264,7 +274,7 @@ const SupplierForm = Form.create({})(
               this.props.form.setFieldsValue({ name: '', address: '', phone: '' })
               this.props.onSuc()
             }
-          }).catch(()=>{Message.error('提交失败')})
+          }).catch(() => { Message.error('提交失败') })
         }
       })
     }
@@ -313,7 +323,7 @@ const SupplierForm = Form.create({})(
               }
             </FormItem>
             <FormItem>
-              <Inupt type="submit">提交</Inupt>
+              <Button type="primary" htmlType="submit">提交</Button>
             </FormItem>
           </Form>
         </div>

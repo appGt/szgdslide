@@ -17,6 +17,10 @@ class ConfirmOrder extends React.Component {
     let goodsList = JSON.parse(localStorage.getItem('goodsList'))
     let userData = JSON.parse(localStorage.getItem('userData'))
     let dataSource = []
+    if(!goodsList){
+      this.props.history.push('/shop')
+      return
+    }
     dataSource.push({
       ...goodsList,
       key: 1
@@ -99,7 +103,7 @@ class ConfirmOrder extends React.Component {
         dataIndex: 'saleNum',
         key: 'saleNum',
         render: (txt, record) => {
-          return <span style={{ fontSize: 16, color: '#f00' }}>{record.num * record.goods.saleNum}</span>
+          return <span style={{ fontSize: 16, color: '#f00' }}>{record.goods.price}</span>
         }
       },
       {
@@ -107,7 +111,7 @@ class ConfirmOrder extends React.Component {
         dataIndex: 'money',
         key: 'money',
         render: (txt, record) => {
-          return <span style={{ fontSize: 16, color: '#f00' }}>{record.num * record.goods.saleNum}</span>
+          return <span style={{ fontSize: 16, color: '#f00' }}>{record.num * record.goods.price}</span>
         }
       },
     ]

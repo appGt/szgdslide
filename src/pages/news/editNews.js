@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Card, Modal, Input, Message } from 'antd'
-import { NavLink } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+import history from 'history/createHashHistory'
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
@@ -9,7 +10,7 @@ import htmlToDraftjs from 'html-to-draftjs'
 import Axios from 'axios'
 import './edit.less'
 
-export default class EditNews extends React.Component {
+export default withRouter(class EditNews extends React.Component {
   state = {
     id: '',
     title: '',
@@ -120,12 +121,16 @@ export default class EditNews extends React.Component {
     })
   }
 
+  back = () => {
+    this.props.history.goBack()
+  }
+
   render() {
     return (
       <div>
         <Card>
           {
-            this.state.showBack ? <NavLink to="/news/list"><Button type="primary" icon="left">返回</Button></NavLink> : ''
+            this.state.showBack ? <Button type="primary" icon="left" onClick={this.back}>返回</Button> : ''
           }
           <Button type="primary" onClick={this.handleSubmit} style={{ marginLeft: 10 }}>提交</Button>
         </Card>
@@ -162,4 +167,4 @@ export default class EditNews extends React.Component {
       </div>
     )
   }
-}
+})

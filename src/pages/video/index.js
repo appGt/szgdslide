@@ -1,7 +1,8 @@
 import React from 'react'
-import { Card, Table, Modal, Button, Form, Input } from 'antd'
+import { Card, Table, Modal, Button, Form, Input, Message } from 'antd'
 import axios from '../../axios'
 import EditVideo from './editVideo'
+import Axios from 'axios';
 const FormItem = Form.Item
 
 export default class Video extends React.Component {
@@ -10,7 +11,8 @@ export default class Video extends React.Component {
     videoPath: '',
     videoVisible: false,
     editVisable: false,
-    videoId: ''
+    videoId: '',
+    selectedRowKeys: []
   }
 
   params = {
@@ -67,6 +69,41 @@ export default class Video extends React.Component {
     this.handleCancel()
   }
 
+  handleDelete = () => {
+    let { selectedRowKeys } = this.state
+    let ids = ''
+    if (selectedRowKeys.length) {
+      selectedRowKeys.forEach(element => {
+        ids += element + ','
+      });
+    } else {
+      return
+    }
+    Axios({
+      method: 'post',
+      url: '/szgdslide/admin/deteleVideo',
+      data: { ids },
+      transformRequest: [function (data) {
+        // 将数据转换为表单数据
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        Message.success('删除成功')
+        this.requestList()
+        this.setState({
+          selectedRowKeys: []
+        })
+      }
+    }).catch((err) => {
+      Message.error('删除失败')
+    })
+  }
+
   render() {
     const columns = [
       {
@@ -105,7 +142,7 @@ export default class Video extends React.Component {
           <Button type="primary" onClick={this.newVideo}>发布新视频</Button>
         </Card>
         <Card style={{ marginTop: 10 }}>
-          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
+          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} handleDelete={this.handleDelete} />
         </Card>
         <div className="content-wrap">
           <Table

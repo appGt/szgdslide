@@ -8,7 +8,7 @@ class EditVideo extends React.Component {
   state = {
     data: '',
     loading: false,
-    imageUrl: '',
+    imgPath: '',
     imgLoading: false,
   }
   Url = {
@@ -92,7 +92,7 @@ class EditVideo extends React.Component {
   Submit = () => {
     let data = this.props.form.getFieldsValue()
     data.path = this.state.path
-    data.imageUrl = this.state.imageUrl
+    data.imgpath = this.state.imgPath
     let url = this.state.id ? this.Url.update : this.Url.add
     if (this.state.id) {
       data.id = this.state.id
@@ -101,7 +101,7 @@ class EditVideo extends React.Component {
       Message.error('请上传视频')
       return
     }
-    if (!data.imageUrl) {
+    if (!data.imgpath) {
       Message.error('请上传视频图片')
       return
     }
@@ -134,13 +134,7 @@ class EditVideo extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form
-    const { imageUrl, imgLoading } = this.state
-    const uploadButton = (
-      <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">Upload</div>
-      </div>
-    );
+    const { imgPath, imgLoading } = this.state
     return (
       <Form layout="vertical">
         <FormItem label="标题" key="title">
@@ -163,7 +157,7 @@ class EditVideo extends React.Component {
           showUploadList={false}
           action="/szgdslide/upload"
           beforeUpload={beforeUpload}
-          onChange={this.handleChange}
+          onChange={this.onImgUpload}
         >
           <Button type="primary" icon={imgLoading ? 'loading' : 'upload'} loading={imgLoading}>
             上传封面图片
@@ -171,15 +165,13 @@ class EditVideo extends React.Component {
         </Upload>
         <div style={{ marginTop: 10, marginBottom: 10, width: 200, height: 200 }} >
           <img style={{ width: 200, height: 200 }} src={
-            imageUrl || 'http://dummyimage.com/200x200'
+            this.state.imgPath || 'http://dummyimage.com/200x200'
           } alt="视频" />
         </div>
         <Upload
           name="files"
           action='/szgdslide/upload'
-          onChange={
-            this.onUpload
-          }
+          onChange={this.onUpload}
         >
           <Button type="primary" icon={this.state.imgLoading ? 'loading' : 'upload'} loading={this.state.imgLoading}>
             上传视频
@@ -196,11 +188,11 @@ class EditVideo extends React.Component {
 function beforeUpload(file) {
   const isJPG = file.type === 'image/jpeg';
   if (!isJPG) {
-    message.error('请上传jpg格式图片');
+    Message.error('请上传jpg格式图片');
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('图片大小不能超过 2MB!');
+    Message.error('图片大小不能超过 2MB!');
   }
   return isJPG && isLt2M;
 }

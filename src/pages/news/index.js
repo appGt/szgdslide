@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Table, message, Modal, Button, Form } from 'antd'
+import { Card, Table, message } from 'antd'
 import { withRouter } from 'react-router-dom'
 import axios from '../../axios'
 import FilterForm from './../../components/FilterForm'
@@ -47,7 +47,7 @@ class News extends React.Component {
 
   //重置过滤条件
   handleReset = () => {
-    this.params = Object.assign(this.params, { title: '', startTime: '', endTime: '' })
+    this.params = Object.assign(this.params, { title: '', start_time: '', end_time: '' })
   }
 
   //删除

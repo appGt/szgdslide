@@ -1,7 +1,5 @@
 import React from 'react'
-import { Button, Layout, Row, Col, Message } from 'antd'
-import CommonHeader from './../components/CommonHeader'
-import './order.less'
+import { Button, Row, Col, Message } from 'antd'
 import Axios from 'axios';
 
 
@@ -102,54 +100,51 @@ export default class OrderDetail extends React.Component {
   render() {
     const order = this.state.order
     return (
-      <Layout style={{ background: '#fff' }}>
-        <CommonHeader />
-        <div className="common-container">
-          <div className="order-wrapper">
-            <Row>
-              <Col span={12} className="label">订单编号</Col>
-              <Col span={12}>{order.id}</Col>
-            </Row>
-            <Row>
-              <Col span={12} className="label">商品</Col>
-              <Col span={12}>
-                {
-                  <span>
-                    <img src={order.good.path} alt="good" />
-                    <span>{order.good.name}</span>
-                  </span>
-                }
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12} className="label">数量</Col>
-              <Col span={12}>{order.num}</Col>
-            </Row>
-            <Row>
-              <Col span={12} className="label">地址</Col>
-              <Col span={12}>{order.address}</Col>
-            </Row>
-            <Row>
-              <Col span={12} className="label">供应商</Col>
-              <Col span={12}>{order.good.supplier.name}</Col>
-            </Row>
-            <Row>
-              <Col span={12} className="label">价格</Col>
-              <Col span={12} style={{ color: 'red', fontSize: 20 }}>￥{order.money}</Col>
-            </Row>
-            <Row>
-              <Col span={12} className="label">状态</Col>
-              <Col span={12}>
-                {
-                  this.getOrderState(order.state)
-                }
-              </Col>
-            </Row>
-          </div>
-          {
-            order.state === 0 ? (<div><Button type="primary" onClick={this.onFinish} style={{ marginRight: 50 }}>已完成</Button></div>) : ''}
+      <div>
+        <div className="order-wrapper">
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>订单编号</Col>
+            <Col span={4}>{order.id}</Col>
+          </Row>
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>商品</Col>
+            <Col span={4}>
+              {
+                <span>
+                  <img src={order.good.path} alt="good" style={{ width: 50, height: 50 }} />
+                  <span>{order.good.name}</span>
+                </span>
+              }
+            </Col>
+          </Row>
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>数量</Col>
+            <Col span={4}>{order.num}</Col>
+          </Row>
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>地址</Col>
+            <Col span={4}>{order.address}</Col>
+          </Row>
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>供应商</Col>
+            <Col span={4}>{order.good.supplier.name}</Col>
+          </Row>
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>价格</Col>
+            <Col span={4} style={{ color: 'red', fontSize: 20 }}>￥{order.money}</Col>
+          </Row>
+          <Row style={{ borderBottom: '1px solid #ccc' }}>
+            <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>状态</Col>
+            <Col span={4}>
+              {
+                this.getOrderState(order.state)
+              }
+            </Col>
+          </Row>
         </div>
-      </Layout>
+        {
+          order.state === 0 || order.state === 1 ? (<div><Button type="primary" onClick={this.onFinish} style={{ marginRight: 50 }}>已完成</Button></div>) : ''}
+      </div>
     )
   }
 }

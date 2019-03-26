@@ -1,5 +1,6 @@
 import React from 'react'
-import { Form, Radio, Button, Input, Message,Breadcrumb } from 'antd'
+import { Form, Radio, Button, Input, Message, Breadcrumb } from 'antd'
+import { NavLink } from 'react-router-dom'
 import Axios from 'axios';
 import Nav from './../web/nav'
 import Top from './../web/top'
@@ -8,7 +9,7 @@ const RadioGroup = Radio.Group
 
 class Register extends React.Component {
   onSubmit = () => {
-    this.props.validateFields((err, values) => {
+    this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log(values)
         Axios({
@@ -24,8 +25,10 @@ class Register extends React.Component {
             return ret
           }],
         }).then((res) => {
-          if (res.statue === 200 && res.data.success) {
-            Message.success('注册成功')
+          if (res.status === 200 && res.data.success) {
+            Message.success(`用户${values.username}注册成功`)
+          } else {
+            Message.error(res.data.message)
           }
         }).catch((err) => {
           console.error(err)
@@ -63,7 +66,7 @@ class Register extends React.Component {
         <Top />
         <Nav />
         <Breadcrumb style={{ marginTop: 20 }}>
-          <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
+          <Breadcrumb.Item><NavLink to="/">首页</NavLink></Breadcrumb.Item>
           <Breadcrumb.Item>注册</Breadcrumb.Item>
         </Breadcrumb>
         <Form {...formItemLayout} onSubmit={this.onSubmit} style={{ width: 740, marginTop: 100 }}>
@@ -87,7 +90,7 @@ class Register extends React.Component {
                   message: '请输入密码'
                 }]
               })(
-                <Input htmlType="password" placeholder="密码" />
+                <Input type="password" placeholder="密码" />
               )
             }
           </FormItem>
@@ -105,7 +108,7 @@ class Register extends React.Component {
           </FormItem>
           <FormItem label="性别">
             {
-              getFieldDecorator('username', {
+              getFieldDecorator('sex', {
                 rules: [{
                   required: true,
                   message: '请输入昵称'

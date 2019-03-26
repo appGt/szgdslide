@@ -1,9 +1,10 @@
 import React from 'react'
-import { Card, Table, message, Modal, Button, Form } from 'antd'
+import { Card, Table, message, Modal, Button, Form, DatePicker, Input, Select } from 'antd'
 import OrderDetail from './orderDetail'
 import { withRouter } from 'react-router-dom'
 import axios from '../../axios'
 import Utils from '../../utils/utils'
+const FormItem = Form.Item
 
 class Order extends React.Component {
   state = {
@@ -67,7 +68,7 @@ class Order extends React.Component {
 
   requestList = () => {
     let _this = this
-    axios.requestList(_this, '/szgdslide/admin/listOrder', {
+    axios.requestList(_this, '/szgdslide/admin/listOrders', {
       params: _this.params,
       isShowLoading: true
     })
@@ -82,8 +83,14 @@ class Order extends React.Component {
       },
       {
         title: '商品',
-        dataIndex: 'title',
-        key: 'title'
+        dataIndex: 'good',
+        key: 'good',
+        render: (good) => {
+          return (<span>
+            <img src={good.path} alt="good" style={{ width: 40, height: 40 }} />
+            <span>{good.name}</span>
+          </span>)
+        }
       },
       {
         title: '数量',
@@ -131,7 +138,6 @@ class Order extends React.Component {
             columns={columns}
             dataSource={this.state.list}
             pagination={this.state.pagination}
-            rowSelection={rowSelection}
           />
         </div>
         <Modal
@@ -140,7 +146,9 @@ class Order extends React.Component {
           onCancel={this.onCancel}
           footer={false}
         >
-          <OrderDetail id={orderId} />
+          {
+            visible ? <OrderDetail id={orderId} /> : ''
+          }
         </Modal>
       </div>
     )
