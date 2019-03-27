@@ -198,17 +198,6 @@ const FilterForm = Form.create({})(
               )
             }
           </FormItem>
-          <FormItem label="供应商" key="supplier">
-            {
-              getFieldDecorator('supplier')(
-                <Select placeholder="供应商" style={{ width: 150 }} >
-                  {
-                    this.props.supplierList
-                  }
-                </Select>
-              )
-            }
-          </FormItem>
           <FormItem>
             <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
             <Button onClick={this.reset} type="default" style={{ marginRight: 10 }}>重置</Button>

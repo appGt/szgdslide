@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button, Card, Modal, Input, Message } from 'antd'
 import { withRouter } from 'react-router-dom'
-import history from 'history/createHashHistory'
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, ContentState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
@@ -17,6 +16,7 @@ export default withRouter(class EditNews extends React.Component {
     nrcontent: '',
     editorState: '',
     showBack: false,
+    path: ''
   }
   Url = {
     add: '/szgdslide/admin/addNew',
@@ -70,10 +70,14 @@ export default withRouter(class EditNews extends React.Component {
 
   //提交
   handleSubmit = () => {
-    let { title, nrcontent, id, } = this.state
+    let { title, nrcontent, id, path } = this.state
     let url = id ? this.Url.update : this.Url.add
-    let newData = { title: title, nrcontent: nrcontent };
-    let updateData = { title, nrcontent, id, }
+    if (!path) {
+      Message.error('请上传新闻图片')
+      return
+    }
+    let newData = { title: title, nrcontent: nrcontent, path: path };
+    let updateData = { title, nrcontent, id, path: path }
     let data = id ? updateData : newData
     Axios({
       url: url,
@@ -121,6 +125,27 @@ export default withRouter(class EditNews extends React.Component {
     })
   }
 
+  onUpload = (info) => {
+    if (info.file.status !== 'uploading') {
+      this.setState({
+        loading: true
+      })
+    }
+    if (info.file.status === 'done' && info.file.response.success === true) {
+      Message.success(`${info.file.name} 上传成功`);
+      this.setState({
+        path: '/szgdslide/files/' + info.file.name,
+        loading: false
+      })
+    } else if (info.file.status === 'error') {
+      Message.error(`${info.file.name} 上传失败.`);
+      this.setState({
+        path: '',
+        loading: false
+      })
+    }
+  }
+
   back = () => {
     this.props.history.goBack()
   }
@@ -136,6 +161,21 @@ export default withRouter(class EditNews extends React.Component {
         </Card>
         <Card title="标题" style={{ marginTop: 10 }}>
           <Input placeholder="标题" onChange={this.titleChange} value={this.state.title} />
+          <Upload
+            accept="image"
+            name="files"
+            action='/szgdslide/upload'
+            showUploadList={false}
+            onChange={this.onUpload}
+          >
+            <Button type="primary" icon={this.state.loading ? 'loading' : 'upload'} loading={this.state.loading}>
+              上传图片
+            </Button>
+          </Upload>
+          <div style={{ marginTop: 10, marginBottom: 10, width: 200, height: 200 }} >
+            <img style={{ width: 200, height: 200 }} src={
+              this.state.path || 'http://dummyimage.com/200x200'
+            } alt="新闻" /></div>
         </Card>
         <Card style={{ marginTop: -10 }}>
           <Editor

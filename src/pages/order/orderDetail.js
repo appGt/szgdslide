@@ -110,10 +110,11 @@ export default class OrderDetail extends React.Component {
             <Col span={4} className="label" style={{ borderRight: '1px solid #e1e2e3', padding: '0 10px' }}>商品</Col>
             <Col span={4}>
               {
+                order.good ?
                 <span>
                   <img src={order.good.path} alt="good" style={{ width: 50, height: 50 }} />
                   <span>{order.good.name}</span>
-                </span>
+                </span> : '商品已下架'
               }
             </Col>
           </Row>

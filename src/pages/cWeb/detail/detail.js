@@ -84,9 +84,9 @@ export default class Detail extends React.Component {
               {Utils.formateDate(this.state.data.time)}
             </span>
           </div>
-          <div className="text-content" style={{paddingTop:20}}>
+          <div className="text-content" style={{ paddingTop: 20 }}>
             {
-              this.state.type === 'video' ? <video src={this.state.data.path} poster={this.state.data.imgpath} controls width={'100%'}/> :
+              this.state.type === 'video' ? <video src={this.state.data.path} poster={this.state.data.imgpath} controls width={'100%'} /> :
                 <div dangerouslySetInnerHTML={{ __html: this.state.data.nrcontent }}></div>
             }
           </div>
