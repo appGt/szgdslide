@@ -1,5 +1,5 @@
 import React from 'react'
-import { Message, Breadcrumb, List } from 'antd'
+import { Message, Breadcrumb, List, Avatar } from 'antd'
 import { NavLink } from 'react-router-dom'
 import Nav from './../web/nav'
 import Top from './../web/top'
@@ -9,14 +9,14 @@ import moment from 'moment';
 
 export default class NewsPage extends React.Component {
   state = {
-    data
+    data: []
   }
 
   params = {
     pageSize: 10,
     pageNo: 1
   }
-  
+
   componentWillMount() {
     this.getData()
   }
@@ -49,21 +49,23 @@ export default class NewsPage extends React.Component {
           <Breadcrumb.Item><NavLink to="/">首页</NavLink></Breadcrumb.Item>
           <Breadcrumb.Item>新闻</Breadcrumb.Item>
         </Breadcrumb>
-        <div className="list">
-          <List
-            itemLayout="horizontal"
-            dataSource={data}
-            renderItem={item => (
-              <List.Item>
+
+
+        <List
+          itemLayout="horizontal"
+          dataSource={data}
+          renderItem={item => (
+            <List.Item>
+              <NavLink to={"/news/" + item.id} target="_blank">
                 <List.Item.Meta
-                  avatar={<img src={item.path} style={{ width: 150, height: 80 }} />}
-                  title={<a href={"/news/" + item.id} target="_blank">{item.title}</a>}
+                  avatar={<Avatar src={item.path || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} style={{ width: 150, height: 150 }} />}
+                  title={<NavLink to={"/news/" + item.id} target="_blank">{item.title}</NavLink>}
                   description={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}
                 />
-              </List.Item>
-            )}
-          />
-        </div>
+              </NavLink>
+            </List.Item>
+          )}
+        />
       </div>
     )
   }

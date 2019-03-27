@@ -84,10 +84,11 @@ export default class Detail extends React.Component {
               {Utils.formateDate(this.state.data.time)}
             </span>
           </div>
+          {this.state.type !== 'video' ? <img src={this.state.data.path} alt="img" style={{ width: '100%' }} /> : ''}
           <div className="text-content" style={{ paddingTop: 20 }}>
+
             {
-              this.state.type === 'video' ? <video src={this.state.data.path} poster={this.state.data.imgpath} controls width={'100%'} /> :
-                <div dangerouslySetInnerHTML={{ __html: this.state.data.nrcontent }}></div>
+              this.state.type === 'video' ? <video src={this.state.data.path} poster={this.state.data.imgpath} controls width={'100%'} /> : <div dangerouslySetInnerHTML={{ __html: this.state.data.nrcontent }}></div>
             }
           </div>
         </div>

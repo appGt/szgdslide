@@ -1,7 +1,8 @@
 import React from 'react'
-import { Card, Table, Modal, Button, Form, Input } from 'antd'
+import { Card, Table, Modal, Button, Form, Input, message } from 'antd'
 import axios from '../../axios'
 import EditAdv from './editAdv'
+import Axios from 'axios'
 const FormItem = Form.Item
 
 export default class Adv extends React.Component {
@@ -32,7 +33,7 @@ export default class Adv extends React.Component {
 
   }
 
-  handleFilter = (params)=>{
+  handleFilter = (params) => {
     this.params = Object.assign(this.params, params)
     this.requestList()
   }
@@ -71,9 +72,38 @@ export default class Adv extends React.Component {
     this.handleCancel()
   }
 
-  onSuc = ()=>{
+  onSuc = () => {
     this.requestList()
     this.handleCancel()
+  }
+
+  //删除
+  handleDelete = () => {
+    let selectedRows = this.state.selectedRows
+    let ids = ''
+    selectedRows.forEach((item, index) => {
+      ids += (item.id + ',')
+    })
+    console.log(ids)
+    Axios({
+      method: 'get',
+      url: '/szgdslide/admin/deteleAdver',
+      params: { ids },
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        message.success('删除成功')
+        this.requestList()
+      } else {
+        message.error('删除失败')
+      }
+    }).catch(() => { message.error('删除失败') })
   }
 
   render() {
@@ -124,7 +154,7 @@ export default class Adv extends React.Component {
           <Button type="primary" onClick={this.newAdv}>添加新广告</Button>
         </Card>
         <Card style={{ marginTop: 10 }}>
-          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
+          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} handleDelete={this.handleDelete} />
         </Card>
         <div className="content-wrap">
           <Table
@@ -171,7 +201,7 @@ const FilterForm = Form.create({})(
           <FormItem>
             <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
             {/* <Button onClick={this.reset} type="default" style={{ marginRight: 10 }}>重置</Button> */}
-            <Button onClick={this.reset} type="danger">删除</Button>
+            <Button onClick={this.delete} type="danger">删除</Button>
           </FormItem>
         </Form>
       )

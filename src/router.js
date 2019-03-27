@@ -15,8 +15,8 @@ import User from './pages/user'
 import NoMatch from './pages/noMatch'
 
 import Web from './pages/cWeb/web/web'
-import WebNews from './pages/cWeb/news/news'
-import WebVideo from './pages/cWeb/video/video'
+import NewsPage from './pages/cWeb/news/newsPage'
+import VideoPage from './pages/cWeb/video/videoPage'
 import WebShop from './pages/cWeb/shop/shop'
 import GoodsDetail from './pages/cWeb/shop/goodsDetail'
 import ConfirmOrder from './pages/cWeb/shop/confirmOrder'
@@ -56,8 +56,8 @@ export default class Router extends React.Component {
             <Route path="/" render={() =>
               <Switch>
                 <Route path="/" exact component={Web} />
-                <Route path="/news" exact component={WebNews} />
-                <Route path="/video" exact component={WebVideo} />
+                <Route path="/news" exact component={NewsPage} />
+                <Route path="/video" exact component={VideoPage} />
                 <Route path="/shop/:id" exact component={GoodsDetail} />
                 <Route path="/order/confirmOrder" exact component={ConfirmOrder} />
                 <Route path="/order/orderDetail/:id" exact component={OrderDetail} />

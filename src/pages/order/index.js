@@ -37,12 +37,8 @@ class Order extends React.Component {
     params.pageNo = this.params.pageNo
     params.pageSize = this.params.pageSize
     this.params = params
-    if (this.params.start_time) {
-      this.params.start_time = new Date(this.params.start_time).getTime()
-    }
-    if (this.params.end_time) {
-      this.params.end_time = new Date(this.params.end_time).getTime()
-    }
+    this.params.start_time = new Date(this.params.start_time).getTime() || ''
+    this.params.end_time = new Date(this.params.end_time).getTime() || ''
     this.requestList()
   }
 
@@ -186,7 +182,7 @@ const FilterForm = Form.create({})(
           </FormItem>
           <FormItem label="时间范围">
             {
-              getFieldDecorator('startTime')(
+              getFieldDecorator('start_time')(
                 <DatePicker showTime={true} disabledHours format="YYYY-MM-DD HH:mm:ss" />
               )
             }

@@ -1,17 +1,15 @@
 import React from 'react'
-import { Card, Table, Drawer, Button, Form, Input } from 'antd'
+import { Card, Table, Modal, Button, Form, Input } from 'antd'
 import axios from '../../axios'
 import Utils from './../../utils/utils';
-import Axios from 'axios';
+import BBSDetail from './bbsDetail';
 const FormItem = Form.Item
 
 export default class BBS extends React.Component {
 
   state = {
-    bigImg: '',
-    supplierList: [],
     visible: false,
-    adverId: ''
+    sendId: ''
   }
 
   params = {
@@ -38,24 +36,16 @@ export default class BBS extends React.Component {
   }
 
   Detail = (record) => {
-    Axios({
-      method: 'post',
-      data: {
-        id: record.id
-      },
-      url: '/szgdslide/admin/detailSend',
-      transformRequest: [function (data) {
-        // 将数据转换为表单数据
-        let ret = ''
-        for (let it in data) {
-          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-        }
-        return ret
-      }],
-    }).then((res)=>{
-      if(res.status ===200 &&res.deata.success){
+    this.setState({
+      visible: true,
+      sendId: record.id
+    })
+  }
 
-      }
+  onCancel = () => {
+    this.setState({
+      visible: false,
+      sendId: ''
     })
   }
 
@@ -92,7 +82,7 @@ export default class BBS extends React.Component {
       {
         title: '创建时间',
         dataIndex: 'time',
-        width: 150,
+        width: 200,
         key: 'time',
         render: (text, record) => {
           return Utils.formateDate(text)
@@ -130,17 +120,14 @@ export default class BBS extends React.Component {
             scroll={{ y: 800 }}
           />
         </div>
-        <Drawer
+        <Modal
           title="帖子详情"
-          placement="right"
-          closable={false}
-          onClose={this.onClose}
+          onCancel={this.onCancel}
           visible={this.state.visible}
+          footer={false}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Drawer>
+          {this.state.visible ? <BBSDetail id={this.state.sendId} /> : ''}
+        </Modal>
       </div>
     );
   }

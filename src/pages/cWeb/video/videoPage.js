@@ -1,5 +1,5 @@
 import React from 'react'
-import { Message, Breadcrumb, List } from 'antd'
+import { Message, Breadcrumb, List, Card } from 'antd'
 import { NavLink } from 'react-router-dom'
 import Nav from './../web/nav'
 import Top from './../web/top'
@@ -8,7 +8,7 @@ import './../web/web.less'
 
 export default class VideoPage extends React.Component {
   state = {
-    data
+    data: []
   }
   componentWillMount() {
     this.getData()
@@ -22,7 +22,7 @@ export default class VideoPage extends React.Component {
   getData() {
     Axios({
       method: 'get',
-      url: '/szgdslide/admin/listVideo',
+      url: '/szgdslide/admin/listVideos',
       params: this.params
     }).then((res) => {
       if (res.status === 200 && res.data.success) {
@@ -47,15 +47,17 @@ export default class VideoPage extends React.Component {
           <Breadcrumb.Item><NavLink to="/">首页</NavLink></Breadcrumb.Item>
           <Breadcrumb.Item>视频</Breadcrumb.Item>
         </Breadcrumb>
-        <div className="list">
+        <div className="list" style={{ marginTop: 20 }}>
           <List
             grid={{ gutter: 16, column: 4 }}
             dataSource={data}
             renderItem={item => (
               <List.Item>
-                <Card title={item.title}>
-                  <NavLink to={"/video/" + item.id}><img src={item.title.imgpath} alt="video" /></NavLink>
-                </Card>
+                <NavLink to={"/video/" + item.id}>
+                  <Card title={item.title}>
+                    <NavLink to={"/video/" + item.id}><img src={item.imgpath} alt="video" style={{ width: '100%', maxHeight: 110 }} target="_blank"/></NavLink>
+                  </Card>
+                </NavLink>
               </List.Item>
             )}
           />

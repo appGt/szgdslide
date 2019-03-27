@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Card, Modal, Input, Message } from 'antd'
+import { Button, Card, Modal, Input, Message, Upload } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, ContentState } from 'draft-js';
@@ -160,7 +160,7 @@ export default withRouter(class EditNews extends React.Component {
           <Button type="primary" onClick={this.handleSubmit} style={{ marginLeft: 10 }}>提交</Button>
         </Card>
         <Card title="标题" style={{ marginTop: 10 }}>
-          <Input placeholder="标题" onChange={this.titleChange} value={this.state.title} />
+          <Input placeholder="标题" onChange={this.titleChange} value={this.state.title} style={{marginBottom:10}}/>
           <Upload
             accept="image"
             name="files"

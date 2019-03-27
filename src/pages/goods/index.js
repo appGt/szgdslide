@@ -84,6 +84,10 @@ export default class goods extends React.Component {
     })
   }
 
+  handleReset = () => {
+    this.params = Object.assign(this.params, { name: '', supplierId: '' })
+  }
+
   //创建商品
   newGood = (record) => {
     this.setState({
@@ -97,7 +101,7 @@ export default class goods extends React.Component {
     })
   }
 
-  onSuc=()=>{
+  onSuc = () => {
     this.requestList()
     this.handleCancel()
   }

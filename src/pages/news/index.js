@@ -36,12 +36,8 @@ class News extends React.Component {
     params.pageNo = this.params.pageNo
     params.pageSize = this.params.pageSize
     this.params = params
-    if (this.params.start_time) {
-      this.params.start_time = new Date(this.params.start_time).getTime()
-    }
-    if (this.params.end_time) {
-      this.params.end_time = new Date(this.params.end_time).getTime()
-    }
+    this.params.start_time = new Date(this.params.start_time).getTime()  || ''
+    this.params.end_time = new Date(this.params.end_time).getTime() || ''
     this.requestList()
   }
 
@@ -54,14 +50,14 @@ class News extends React.Component {
   handleDelete = () => {
     let selectedRows = this.state.selectedRows
     let ids = ''
-    selectedRows.forEach((i, item) => {
+    selectedRows.forEach((item, index) => {
       ids += (item.id + ',')
     })
     console.log(ids)
     Axios({
-      method: 'post',
-      url: '/szgdslide/admin/deleteNews',
-      data: { ids },
+      method: 'get',
+      url: '/szgdslide/admin/deteleNew',
+      params: { ids },
       transformRequest: [function (data) {
         let ret = ''
         for (let it in data) {
@@ -74,9 +70,9 @@ class News extends React.Component {
         message.success('删除成功')
         this.requestList()
       } else {
-        message.success('删除失败')
+        message.error('删除失败')
       }
-    }).catch(() => { message.success('删除失败') })
+    }).catch(() => { message.error('删除失败') })
   }
 
   handleDetail = (record, e) => {
@@ -143,7 +139,7 @@ class News extends React.Component {
     return (
       <div>
         <Card>
-          <FilterForm formList={this.formList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
+          <FilterForm formList={this.formList} filterSubmit={this.handleFilter} handleReset={this.handleReset} handleDelete={this.handleDelete} />
         </Card>
         <div className="content-wrap">
           <Table
