@@ -87,8 +87,10 @@ class Order extends React.Component {
         key: 'good',
         render: (good) => {
           return (<span>
-            <img src={good.path} alt="good" style={{ width: 40, height: 40 }} />
-            <span>{good.name}</span>
+            {
+              good ? <span><img src={good.path} alt="good" style={{ width: 40, height: 40 }} />
+                <span>{good.name}</span></span> : '商品已下架'
+            }
           </span>)
         }
       },
