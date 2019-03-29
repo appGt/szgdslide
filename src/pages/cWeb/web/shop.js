@@ -32,7 +32,7 @@ export default class Shop extends React.Component {
             {
               goodList.map((item, i) => {
                 return (<div className="video-item" key={i}>
-                  <NavLink to={'/shop/' + item.id} target="_blank"><img src={item.path} alt="videoImg" /></NavLink>
+                  <NavLink to={'/shop/' + item.id} target="_blank"><img src={item.path} alt="videoImg" style={{width:'100%',height:183}}/></NavLink>
                   <div className="text">
                     <p className="price">
                       ￥<span className="price-num">{item.price}</span>
