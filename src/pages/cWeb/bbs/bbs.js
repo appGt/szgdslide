@@ -21,7 +21,11 @@ export default class BBS extends React.Component {
     nameVisible: false,
     userData: {},
     isLogin: false,
-    sendId: ''
+    sendId: '',
+    userdesc: '',
+    oldpassword: '',
+    newpassowrd: '',
+    confirmpassword: '',
   }
   componentWillMount() {
     this.isLogined()
@@ -80,15 +84,15 @@ export default class BBS extends React.Component {
   }
 
   onNewName = () => {
-    let name = this.state.name
-    if(!name){
-      Message.error('不能为空')
+    let { userdesc, oldpassword, newpassowrd, confirmpassword } = this.state.userdesc
+    if (newpassowrd !== confirmpassword) {
+      Message.error('两次密码不一致')
       return
     }
     Axios({
       url: 'post',
       method: 'post',
-      data: { name: name },
+      data: { userdesc, oldpassword, newpassowrd },
       transformRequest: [function (data) {
         let ret = ''
         for (let it in data) {
@@ -103,15 +107,36 @@ export default class BBS extends React.Component {
           userData: res.data.data
         })
       } else {
-        Message.error('修改失败')
+        Message.error(res.data.message)
       }
     }).catch(e => { Message.error('修改失败') })
   }
 
   onNameChange = (e) => {
-    this.setState({
-      name: e.target.value
-    })
+    switch (e.target.name) {
+      case 'userdesc':
+        this.setState({
+          userdesc: e.target.value
+        })
+        break;
+      case 'oldpassword':
+        this.setState({
+          oldpassword: e.target.value
+        })
+        break;
+      case 'newpassowrd':
+        this.setState({
+          newpassowrd: e.target.value
+        })
+        break;
+      case 'confirmpassword':
+        this.setState({
+          confirmpassword: e.target.value
+        })
+        break;
+      default:
+        break;
+    }
   }
 
   addNewSend = () => {
@@ -216,7 +241,7 @@ export default class BBS extends React.Component {
           <Affix className="person-info">
             <div>
               {
-                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} changeName={this.changeName}/> : <UserLogin handleLogin={this.handleLogin} />
+                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} changeName={this.changeName} /> : <UserLogin handleLogin={this.handleLogin} />
               }
             </div>
           </Affix>
@@ -236,7 +261,12 @@ export default class BBS extends React.Component {
           onCancel={this.onClose}
           width={800}
         >
-          <Input onChange={this.onNameChange} placeholder="名称" value={this.state.name} />
+          <div onChange={this.onNameChange}>
+            <input type="text" name="userdesc" placeholder="名称" value={this.state.name} />
+            <input type="password" name="oldpassword" placeholder="原密码" value={this.state.name} />
+            <input type="password" name="newpassword" placeholder="新密码" value={this.state.name} />
+            <input type="password" name="confirmpassword" placeholder="确认新密码" value={this.state.name} />
+          </div>
           <Button onClick={this.onNewName}>确认</Button>
         </Modal>
       </Layout>
