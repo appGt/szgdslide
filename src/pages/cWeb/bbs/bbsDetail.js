@@ -15,6 +15,7 @@ export default class BBSDetail extends React.Component {
     isLogin: false,
     submitting: false,
     newSend: '',
+    nameVisible: false,
     //回复
     replyVisible: false,
     reviewId: '',
@@ -108,6 +109,48 @@ export default class BBSDetail extends React.Component {
     })
   }
 
+  changeName = () => {
+    this.setState({
+      nameVisible: true
+    })
+  }
+
+  onNewName = () => {
+    let name = this.state.name
+    if (!name) {
+      Message.error('不能为空')
+      return
+    }
+    Axios({
+      url: 'post',
+      method: 'post',
+      data: { name: name },
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        this.setState({
+          nameVisible: false,
+          userData: res.data.data
+        })
+      } else {
+        Message.error('修改失败')
+      }
+    }).catch(e => { Message.error('修改失败') })
+  }
+
+  onNameChange = (e) => {
+    this.setState({
+      name: e.target.value
+    })
+  }
+
+
   handleChange = (e) => {
     this.setState({
       newSend: e.target.value
@@ -168,6 +211,13 @@ export default class BBSDetail extends React.Component {
       reviewId: '',
       tos: {},
       replyContent: ''
+    })
+  }
+
+  onClose=()=>{
+    this.setState({
+      nameVisible: false,
+      name: ''
     })
   }
 
@@ -298,7 +348,7 @@ export default class BBSDetail extends React.Component {
           <Affix className="person-info" offsetTop={20} style={{ height: 400, padding: 20 }}>
             <div>
               {
-                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} /> : <UserLogin handleLogin={this.handleLogin} />
+                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} changeName={this.changeName}/> : <UserLogin handleLogin={this.handleLogin} />
               }
             </div>
           </Affix>
@@ -310,6 +360,14 @@ export default class BBSDetail extends React.Component {
           title={'回复@ ' + this.state.tos.userdesc + ':' + this.state.toContent}
         >
           <TextArea onChange={this.onReplyChange} value={this.state.replyContent} rows={4} />
+        </Modal>
+        <Modal
+          visible={this.state.nameVisible}
+          onCancel={this.onClose}
+          width={800}
+        >
+          <Input onChange={this.onNameChange} placeholder="名称" value={this.state.name} />
+          <Button onClick={this.onNewName}>确认</Button>
         </Modal>
       </Layout>
 

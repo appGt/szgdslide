@@ -5,7 +5,10 @@ export default function UserInfo(props) {
   return (
     <div className="user-info" style={{ border: '1px solid #a7c8efba', padding: 20 }}>
       <Avatar size={64} style={{ backgroundColor: '#1890ff' }}>{user.userdesc.charAt(0)}</Avatar>
-      <p style={{ marginTop: 10, paddingBottom: 10, borderBottom: '1px solid #ccc' }}>{user.userdesc}</p>
+      <p style={{ marginTop: 10, paddingBottom: 10, borderBottom: '1px solid #ccc' }}>
+        {user.userdesc}
+        {props.shop ? '' : <Icon type="edit" onClick={props.changeName} />}
+      </p>
       {
         props.shop ? (<Row style={{ marginBottom: 20 }}>
           <Col span={12} className="user-more-right" style={{ padding: 10, height: 80, borderRight: '1px solid #ccc' }}>

@@ -18,8 +18,7 @@ export default class BBS extends React.Component {
   state = {
     sendList: [],
     visible: false,
-    bbsVisible: false,
-    loginVisable: false,
+    nameVisible: false,
     userData: {},
     isLogin: false,
     sendId: ''
@@ -74,6 +73,47 @@ export default class BBS extends React.Component {
     })
   }
 
+  changeName = () => {
+    this.setState({
+      nameVisible: true
+    })
+  }
+
+  onNewName = () => {
+    let name = this.state.name
+    if(!name){
+      Message.error('不能为空')
+      return
+    }
+    Axios({
+      url: 'post',
+      method: 'post',
+      data: { name: name },
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        this.setState({
+          nameVisible: false,
+          userData: res.data.data
+        })
+      } else {
+        Message.error('修改失败')
+      }
+    }).catch(e => { Message.error('修改失败') })
+  }
+
+  onNameChange = (e) => {
+    this.setState({
+      name: e.target.value
+    })
+  }
+
   addNewSend = () => {
     if (!this.state.isLogin) {
       Message.error('请先登录')
@@ -87,6 +127,8 @@ export default class BBS extends React.Component {
   onClose = () => {
     this.setState({
       visible: false,
+      nameVisible: false,
+      name: ''
     })
   }
 
@@ -158,21 +200,7 @@ export default class BBS extends React.Component {
       data.avatar = data.name.split('')[0]
       data.color = this.colorList[i]
       data.id = Item.id
-      return <Send {...data} key={i} onDetail={this.onDetail} />
-    })
-  }
-
-  onDetail = (sendId) => {
-    this.setState({
-      bbsVisible: true,
-      sendId: sendId
-    })
-  }
-
-  onDetailClose = () => {
-    this.setState({
-      bbsVisible: false,
-      sendId: ''
+      return <Send {...data} key={i} />
     })
   }
 
@@ -188,7 +216,7 @@ export default class BBS extends React.Component {
           <Affix className="person-info">
             <div>
               {
-                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} /> : <UserLogin handleLogin={this.handleLogin} />
+                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} changeName={this.changeName}/> : <UserLogin handleLogin={this.handleLogin} />
               }
             </div>
           </Affix>
@@ -204,14 +232,12 @@ export default class BBS extends React.Component {
           </Drawer>
         </div>
         <Modal
-          visible={this.state.bbsVisible}
-          onCancel={this.onDetailClose}
-          footer={false}
+          visible={this.state.nameVisible}
+          onCancel={this.onClose}
           width={800}
         >
-          {
-            this.state.bbsVisible ? <BBSDetail sendId={this.state.sendId} /> : ''
-          }
+          <Input onChange={this.onNameChange} placeholder="名称" value={this.state.name} />
+          <Button onClick={this.onNewName}>确认</Button>
         </Modal>
       </Layout>
     )
