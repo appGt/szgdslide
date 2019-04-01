@@ -24,7 +24,7 @@ export default class BBS extends React.Component {
     sendId: '',
     userdesc: '',
     oldpassword: '',
-    newpassowrd: '',
+    newpassword: '',
     confirmpassword: '',
   }
   componentWillMount() {
@@ -84,15 +84,15 @@ export default class BBS extends React.Component {
   }
 
   onNewName = () => {
-    let { userdesc, oldpassword, newpassowrd, confirmpassword } = this.state.userdesc
-    if (newpassowrd !== confirmpassword) {
+    let { userdesc, oldpassword, newpassword, confirmpassword } = this.state
+    if (newpassword !== confirmpassword) {
       Message.error('两次密码不一致')
       return
     }
     Axios({
-      url: 'post',
+      url: '/szgdslide/admin/updateUser',
       method: 'post',
-      data: { userdesc, oldpassword, newpassowrd },
+      data: { userdesc, oldpassword, password: newpassword },
       transformRequest: [function (data) {
         let ret = ''
         for (let it in data) {
@@ -102,12 +102,11 @@ export default class BBS extends React.Component {
       }],
     }).then((res) => {
       if (res.status === 200 && res.data.success) {
-        this.setState({
-          nameVisible: false,
-          userData: res.data.data
-        })
+        Message.success('修改成功，请重新登录')
+        this.onClose()
+        setTimeout(this.logout, 500)
       } else {
-        Message.error(res.data.message)
+        Message.error(res.data.message || '修改失败')
       }
     }).catch(e => { Message.error('修改失败') })
   }
@@ -124,9 +123,9 @@ export default class BBS extends React.Component {
           oldpassword: e.target.value
         })
         break;
-      case 'newpassowrd':
+      case 'newpassword':
         this.setState({
-          newpassowrd: e.target.value
+          newpassword: e.target.value
         })
         break;
       case 'confirmpassword':
@@ -153,7 +152,10 @@ export default class BBS extends React.Component {
     this.setState({
       visible: false,
       nameVisible: false,
-      name: ''
+      userdesc: '',
+      oldpassword: '',
+      newpassword: '',
+      confirmpassword: '',
     })
   }
 
@@ -259,13 +261,16 @@ export default class BBS extends React.Component {
         <Modal
           visible={this.state.nameVisible}
           onCancel={this.onClose}
-          width={800}
+          title="更改个人信息"
+          title="更改个人信息"
+          footer={false}
+          maskClosable={false}
         >
           <div onChange={this.onNameChange}>
-            <input type="text" name="userdesc" placeholder="名称" value={this.state.name} />
-            <input type="password" name="oldpassword" placeholder="原密码" value={this.state.name} />
-            <input type="password" name="newpassword" placeholder="新密码" value={this.state.name} />
-            <input type="password" name="confirmpassword" placeholder="确认新密码" value={this.state.name} />
+            <Input type="text" name="userdesc" placeholder="名称" value={this.state.userdesc} style={{marginBottom:10}}/>
+            <Input type="password" name="oldpassword" placeholder="原密码" value={this.state.oldpassword} style={{marginBottom:10}}/>
+            <Input type="password" name="newpassword" placeholder="新密码" value={this.state.newpassword} style={{marginBottom:10}}/>
+            <Input type="password" name="confirmpassword" placeholder="确认新密码" value={this.state.confirmpassword} style={{marginBottom:10}}/>
           </div>
           <Button onClick={this.onNewName}>确认</Button>
         </Modal>

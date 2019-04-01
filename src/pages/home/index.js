@@ -1,6 +1,6 @@
 import React from 'react'
 import Axios from 'axios';
-import { Card, Row, Col } from 'antd'
+import { Card } from 'antd'
 import './index.less'
 //按需加载
 import echarts from 'echarts/lib/echarts'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Row, Col, Button } from 'antd'
+import { Avatar, Row, Col, Button,Icon } from 'antd'
 export default function UserInfo(props) {
   const { answerNum, reviewNum, sendNum, user, orderNum } = props.userData
   return (

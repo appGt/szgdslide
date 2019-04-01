@@ -16,6 +16,10 @@ export default class BBSDetail extends React.Component {
     submitting: false,
     newSend: '',
     nameVisible: false,
+    userdesc: '',
+    oldpassword: '',
+    newpassword: '',
+    confirmpassword: '',
     //回复
     replyVisible: false,
     reviewId: '',
@@ -116,15 +120,15 @@ export default class BBSDetail extends React.Component {
   }
 
   onNewName = () => {
-    let name = this.state.name
-    if (!name) {
-      Message.error('不能为空')
+    let { userdesc, oldpassword, newpassword, confirmpassword } = this.state
+    if (newpassword !== confirmpassword) {
+      Message.error('两次密码不一致')
       return
     }
     Axios({
-      url: 'post',
+      url: '/szgdslide/admin/updateUser',
       method: 'post',
-      data: { name: name },
+      data: { userdesc, oldpassword, password: newpassword },
       transformRequest: [function (data) {
         let ret = ''
         for (let it in data) {
@@ -134,10 +138,9 @@ export default class BBSDetail extends React.Component {
       }],
     }).then((res) => {
       if (res.status === 200 && res.data.success) {
-        this.setState({
-          nameVisible: false,
-          userData: res.data.data
-        })
+        Message.success('修改成功，请重新登录')
+        this.onClose()
+        setTimeout(this.logout, 500)
       } else {
         Message.error('修改失败')
       }
@@ -145,9 +148,30 @@ export default class BBSDetail extends React.Component {
   }
 
   onNameChange = (e) => {
-    this.setState({
-      name: e.target.value
-    })
+    switch (e.target.name) {
+      case 'userdesc':
+        this.setState({
+          userdesc: e.target.value
+        })
+        break;
+      case 'oldpassword':
+        this.setState({
+          oldpassword: e.target.value
+        })
+        break;
+      case 'newpassword':
+        this.setState({
+          newpassword: e.target.value
+        })
+        break;
+      case 'confirmpassword':
+        this.setState({
+          confirmpassword: e.target.value
+        })
+        break;
+      default:
+        break;
+    }
   }
 
 
@@ -214,10 +238,13 @@ export default class BBSDetail extends React.Component {
     })
   }
 
-  onClose=()=>{
+  onClose = () => {
     this.setState({
       nameVisible: false,
-      name: ''
+      userdesc: '',
+      oldpassword: '',
+      newpassword: '',
+      confirmpassword: '',
     })
   }
 
@@ -348,7 +375,7 @@ export default class BBSDetail extends React.Component {
           <Affix className="person-info" offsetTop={20} style={{ height: 400, padding: 20 }}>
             <div>
               {
-                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} changeName={this.changeName}/> : <UserLogin handleLogin={this.handleLogin} />
+                this.state.isLogin ? <UserInfo userData={this.state.userData} logout={this.logout} changeName={this.changeName} /> : <UserLogin handleLogin={this.handleLogin} />
               }
             </div>
           </Affix>
@@ -364,9 +391,16 @@ export default class BBSDetail extends React.Component {
         <Modal
           visible={this.state.nameVisible}
           onCancel={this.onClose}
-          width={800}
+          title="更改个人信息"
+          footer={false}
+          maskClosable={false}
         >
-          <Input onChange={this.onNameChange} placeholder="名称" value={this.state.name} />
+          <div onChange={this.onNameChange}>
+            <Input type="text" name="userdesc" placeholder="名称" value={this.state.userdesc} style={{ marginBottom: 10 }} />
+            <Input type="password" name="oldpassword" placeholder="原密码" value={this.state.oldpassword} style={{ marginBottom: 10 }} />
+            <Input type="password" name="newpassword" placeholder="新密码" value={this.state.newpassword} style={{ marginBottom: 10 }} />
+            <Input type="password" name="confirmpassword" placeholder="确认新密码" value={this.state.confirmpassword} style={{ marginBottom: 10 }} />
+          </div>
           <Button onClick={this.onNewName}>确认</Button>
         </Modal>
       </Layout>

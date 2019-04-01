@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Message, Upload, Button, Icon } from 'antd'
+import { Input, Form, Message, Upload, Button } from 'antd'
 import Axios from 'axios';
 const FormItem = Form.Item
 
@@ -134,7 +134,7 @@ class EditVideo extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form
-    const { imgPath, imgLoading } = this.state
+    const { imgLoading } = this.state
     return (
       <Form layout="vertical">
         <FormItem label="标题" key="title">
