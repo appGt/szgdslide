@@ -70,15 +70,11 @@ export default class Video extends React.Component {
   }
 
   handleDelete = () => {
-    let { selectedRowKeys } = this.state
+    let selectedRows = this.state.selectedRows
     let ids = ''
-    if (selectedRowKeys.length) {
-      selectedRowKeys.forEach(element => {
-        ids += element + ','
-      });
-    } else {
-      return
-    }
+    selectedRows.forEach((item, index) => {
+      ids += (item.id + ',')
+    })
     Axios({
       method: 'post',
       url: '/szgdslide/admin/deteleVideo',
@@ -96,7 +92,8 @@ export default class Video extends React.Component {
         Message.success('删除成功')
         this.requestList()
         this.setState({
-          selectedRowKeys: []
+          selectedRowKeys: [],
+          selectedRows: []
         })
       }
     }).catch((err) => {

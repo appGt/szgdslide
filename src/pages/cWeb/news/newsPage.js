@@ -54,6 +54,7 @@ export default class NewsPage extends React.Component {
         <List
           itemLayout="horizontal"
           dataSource={data}
+          style={{background:'#fff'}}
           renderItem={item => (
             <List.Item>
               <NavLink to={"/news/" + item.id} target="_blank">

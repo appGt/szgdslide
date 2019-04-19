@@ -69,6 +69,7 @@ class News extends React.Component {
       if (res.status === 200 && res.data.success) {
         message.success('删除成功')
         this.requestList()
+        this.setState({ selectedRowKeys:[], selectedRows:[] })
       } else {
         message.error('删除失败')
       }

@@ -1,0 +1,5 @@
+.bg{
+  background: url('/asset/bg2.jpg') repeat-y;
+  background-size: 100%;
+  background-attachment:fixed;
+}

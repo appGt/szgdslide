@@ -14,6 +14,9 @@ export default {
       onChange: (current, pageSize) => {
         callback(current, pageSize)
       },
+      onShowSizeChange: (current, pageSize) =>{
+        callback(current, pageSize)
+      },
       current: data.pageNo,
       pageSize: data.pageSize,
       total: data.totalCount,

@@ -111,6 +111,35 @@ export default class goods extends React.Component {
     this.handleCancel()
   }
 
+  handleDelete = () =>{
+    let selectedRows = this.state.selectedRows
+    let ids = ''
+    selectedRows.forEach((item, index) => {
+      ids += (item.id + ',')
+    })
+    console.log(ids)
+    Axios({
+      method: 'get',
+      url: '/szgdslide/admin/deteleGood',
+      params: { ids },
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        Message.success('删除成功')
+        this.requestList()
+        this.setState({ selectedRowKeys:[], selectedRows:[] })
+      } else {
+        Message.error('删除失败')
+      }
+    }).catch(() => { Message.error('删除失败') })
+  }
+
   render() {
     const columns = [
       {
@@ -179,7 +208,7 @@ export default class goods extends React.Component {
           <Button type="primary" onClick={this.newSupplier} style={{ marginLeft: 20 }}>添加供应商</Button>
         </Card>
         <Card style={{ marginTop: 10 }}>
-          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
+          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} handleDelete={this.handleDelete}/>
         </Card>
         <div className="content-wrap">
           <Table
@@ -247,7 +276,7 @@ const FilterForm = Form.create({})(
           <FormItem>
             <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
             <Button onClick={this.reset} type="default" style={{ marginRight: 10 }}>重置</Button>
-            <Button onClick={this.reset} type="danger">删除</Button>
+            <Button onClick={this.delete} type="danger">删除</Button>
           </FormItem>
         </Form>
       )

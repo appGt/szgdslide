@@ -1,7 +1,8 @@
 import React from 'react'
-import { Card, Table, Button, Form, Input } from 'antd'
+import { Card, Table, Button, Form, Input, message } from 'antd'
 import axios from '../../axios'
 import Utils from './../../utils/utils';
+import Axios from 'axios'
 const FormItem = Form.Item
 
 export default class User extends React.Component {
@@ -35,6 +36,41 @@ export default class User extends React.Component {
   handleFilter = (params) => {
     this.params = Object.assign(this.params, params)
     this.requestList()
+  }
+
+  //删除
+  handleDelete = () => {
+    let selectedRows = this.state.selectedRows
+    let ids = ''
+    selectedRows.forEach((item, index) => {
+      ids += (item.id + ',')
+    })
+    console.log(ids)
+    Axios({
+      method: 'get',
+      url: '/szgdslide/admin/deteleUser',
+      params: { ids },
+      transformRequest: [function (data) {
+        let ret = ''
+        for (let it in data) {
+          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+        }
+        return ret
+      }],
+    }).then((res) => {
+      if (res.status === 200 && res.data.success) {
+        message.success('删除成功')
+        this.requestList()
+        this.setState({ selectedRowKeys:[], selectedRows:[] })
+      } else {
+        message.error('删除失败')
+      }
+    }).catch(() => { message.error('删除失败') })
+  }
+
+   //选中
+   onSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ selectedRowKeys, selectedRows });
   }
 
   render() {
@@ -77,10 +113,17 @@ export default class User extends React.Component {
       },
     ]
 
+    const selectedRowKeys = this.state.selectedRowKeys
+    const rowSelection = {
+      type: 'checkbox',
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    }
+
     return (
       <div className="full-height">
         <Card style={{ marginTop: 10 }}>
-          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleReset={this.handleReset} />
+          <FilterForm supplierList={this.state.supplierList} filterSubmit={this.handleFilter} handleDelete={this.handleDelete} />
         </Card>
         <div className="content-wrap">
           <Table
@@ -88,7 +131,7 @@ export default class User extends React.Component {
             columns={columns}
             dataSource={this.state.list}
             pagination={this.state.pagination}
-            // scroll={{ y: 800 }}
+            rowSelection={rowSelection}
           />
         </div>
       </div>
@@ -101,6 +144,10 @@ const FilterForm = Form.create({})(
     query = () => {
       const params = this.props.form.getFieldsValue()
       this.props.filterSubmit(params)
+    }
+
+    delete = () =>{
+      this.props.handleDelete()
     }
 
     render() {
@@ -116,6 +163,7 @@ const FilterForm = Form.create({})(
           </FormItem>
           <FormItem>
             <Button onClick={this.query} type="primary" style={{ marginRight: 10 }}>查询</Button>
+            <Button onClick={this.delete} type="danger" style={{ marginRight: 10 }}>删除</Button>
           </FormItem>
         </Form>
       )

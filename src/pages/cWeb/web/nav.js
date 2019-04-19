@@ -12,7 +12,7 @@ function Nav(props) {
       <NavLink className="web-nav-item" to="/video">视频</NavLink>
       <NavLink className="web-nav-item" to="/bbs">社区</NavLink>
       <NavLink className="web-nav-item" to="/shop">商城</NavLink>
-      <NavLink className="web-nav-item" to="/adminlogin">管理员登录</NavLink>
+      {/* <NavLink className="web-nav-item" to="/adminlogin">管理员登录</NavLink> */}
     </div>
   )
 }
